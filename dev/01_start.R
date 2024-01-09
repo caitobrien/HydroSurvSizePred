@@ -20,11 +20,11 @@
 ##
 golem::fill_desc(
   pkg_name = "HydroSurvSizePred", # The Name of the package containing the App
-  pkg_title = "PKG_TITLE", # The Title of the package containing the App
-  pkg_description = "PKG_DESC.", # The Description of the package containing the App
-  author_first_name = "AUTHOR_FIRST", # Your First Name
-  author_last_name = "AUTHOR_LAST", # Your Last Name
-  author_email = "AUTHOR@MAIL.COM", # Your Email
+  pkg_title = "Salmon smolt length, predation risk, and survival", # The Title of the package containing the App
+  pkg_description = "App used to explore sp/su Chinook Salmon smolt length distributions, predator risk from Northern Pikeminnow and Pacific Hake, and survival across years and seasons.", # The Description of the package containing the App
+  author_first_name = "CAITLIN", # Your First Name
+  author_last_name = "OBRIEN", # Your Last Name
+  author_email = "CSOBRIEN@UW.EDU", # Your Email
   repo_url = NULL, # The URL of the GitHub Repo (optional),
   pkg_version = "0.0.0.9000" # The Version of the package containing the App
 )
