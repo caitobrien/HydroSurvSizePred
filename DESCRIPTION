@@ -1,12 +1,8 @@
 Package: HydroSurvSizePred
-Title: An Amazing Shiny App
+Title: Salmon smolt length, predation risk, and survival
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
-           role = c("aut", "cre"),
-           email = "your@email.com")
-Description: What the package does (one paragraph).
+Authors@R: person('CAITLIN', 'OBRIEN', email = 'CSOBRIEN@UW.EDU', role = c('cre', 'aut'))
+Description: App used to explore sp/su Chinook Salmon smolt length distributions, predator risk from Northern Pikeminnow and Pacific Hake, and survival across years and seasons.
 License: What license is it under?
 Imports: 
     config (>= 0.3.2),
