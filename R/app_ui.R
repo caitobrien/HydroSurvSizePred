@@ -8,6 +8,7 @@
 library(ggplot2)
 library(dplyr)
 library(shinyWidgets)
+library(shinydashboard)
 
 # Generating sample data
 set.seed(123)
@@ -34,10 +35,10 @@ app_ui <- function(request) {
           id = "tabs",
           menuItem("Welcome", tabName = "welcome", icon = icon("home")),
           menuItem("SizePred Survival App", tabName = "figs", icon = icon("chart-line"),
-                   menuSubItem("Size, Predation, and Survival", tabName = "mainpage", icon = icon("diagram-project")),
-                   menuSubItem("Smolt Size", tabName = "subpage1", icon = icon("ruler-horizontal")),
-                   menuSubItem("Predation Risk", tabName = "subpage2", icon = icon("arrow-trend-down")),
-                   menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up"))
+                   menuSubItem("Size, Predation, and Survival", tabName = "mainpage_sizepredsurv", icon = icon("diagram-project")),
+                   menuSubItem("Smolt Size", tabName = "subpage1_smoltsize", icon = icon("ruler-horizontal")),
+                   menuSubItem("Predation Risk", tabName = "subpage2_predrisk", icon = icon("arrow-trend-down")),
+                   menuSubItem("Estimated Survival", tabName = "subpage3_estsurv", icon = icon("arrow-trend-up"))
           ),
           menuItem("Background", tabName = "background", icon = icon("info"))
         )
@@ -45,11 +46,12 @@ app_ui <- function(request) {
       shinydashboard::dashboardBody(
         tabItems(
           tabItem("welcome", h2("Welcome to Columbia River Fish Survival Dashboard")),
-          tabItem("mainpage", h2("Summary of smolt size, predation risk and estimated survival for Chinook Salmon"),
+          tabItem("mainpage_sizepredsurv", h2("Summary of smolt size, predation risk and estimated survival for Chinook Salmon"),
                   mod_mainpage_ui("mainpage_1")),
-          tabItem("subpage1", h2("Smolt Size Content")),
-          tabItem("subpage2", h2("Predation Risk Content")),
-          tabItem("subpage3", h2("Estimated Survival Content")),
+          tabItem("subpage1_smoltsize", h2("Smolt Size Distributions"),
+                  mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
+          tabItem("subpage2_predrisk", h2("Predation Risk Content")),
+          tabItem("subpage3_estsurv", h2("Estimated Survival Content")),
           tabItem("background", h2("Background Information"))
         )
       )
