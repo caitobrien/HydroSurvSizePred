@@ -1,0 +1,88 @@
+#' background_page UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+#' @importFrom shiny NS tagList
+mod_background_page_ui <- function(id){
+  ns <- NS(id)
+  tagList(
+    fluidRow(
+      shinydashboard::box(
+        width = 12,
+        solidHeader = TRUE,
+        status = "primary",
+        title = "Background information for HydroSurvSizePred shinyAPP,",
+        em("an exploratory app of size, predation risk, and survival in the hydrosystem")
+      ),
+
+      shinydashboard::box(
+        width = 12,
+        solidHeader = FALSE,
+        title = "Overview",
+        status = "info",
+        br(),
+        HTML("<div>
+             <p>Smolts migrating downstream the Snake and Columbia rivers towards the Pacific Ocean encounter fish predators, such as Northern Pikeminnow (N. Pikeminnow, <em>Ptychocheilus oregonensis</em>). As the smolts migrate through the early ocean environment, they encounter additional fish predators, such as Pacific Hake,<em>Merluccius productus</em> (Muir et al. 2006).</p>
+              <p>Size-selective predation can be particularly important for small salmon smolts. Their sizes differ across years and through the season, depending on conditions experienced that affect their growth.</p>
+              <p>Smolts may also differ in size depending on the type of passage: in-river or transported passage through the hydrosystem (Lower Granite Dam [LWG] to Bonneville Dam [BON]). Transported smolts may be smaller than in-river smolts because of loss of growth opportunity during their short passage through the hydrosystem (transported: 2 days; in-river: ~2-4 weeks).</p>
+              <p>Smaller smolts will be at greater risk of predation than larger smolts, and predation risk will also depend on the size distribution of the predators. The proportion of fish below a size threshold can be an indicator of survival (Muir et al. 2006).</p>
+             <p>Survival can be estimated through the hydrosystem (LGR-BON), post-hydrosystem (juveniles at BON to adults at BOA), and these reaches altogether (LGR-BOA) from fish tagged with passive integrated transponder tags and through mark-recapture modeling (Cormack 1964, Jolly 1965, Seber 1965, Gosselin et al. 2021).</p>
+             </div>"
+             )
+      ),
+      shinydashboard::box(
+        width = 12,
+        solidHeader = FALSE,
+        title = "Salmon Length – Predator Survey Method Documentation",
+        status = "info",
+        br(),
+        HTML("
+             <div>
+             <p>Implementing Emmett (2008) – Pacific Hake data:</p>
+             <ul>
+             <li>Emmett (2008), page 5, boxplot image was inserted into
+             <a href='https://plotdigitizer.com/app'>https://plotdigitizer.com/app</a>
+             and the five-summary data was extracted from 1998-2004, 2017, and 2019 and saved into “Pacific Hake Data.csv”.
+             </li>
+             <li>Data was then converted from predator length to prey length utilizing y~0.350838x-33.3482 to apply the linear relationship to determine prey size susceptible to predation (Muir et al 2006, page 1526, for Pacific Hake). [Pacific Hake Conversion.R]</li>
+             <li>The five-summary data was then graphed utilizing lines of dark green where low & high were dotted lines, q1 & q3 were dashed lines, and median was a solid line.</li>
+             </ul>
+             <p>Getting Norther Pike threshold:</p>
+             <ul>
+             <li>For the Northern Pikeminnow length distributions (ranges & medians), we utilized Figure 10 in Winther et al. 2021 and Winther et al. 2019, Table D-1 in Storch et al. 2014, and Figure 10 in Porter et al. 2013.</li>
+             <li>For each figure, we obtained the min and max values as well as the median range. From there, we took the median of the median range and used that as the median threshold.</li>
+             <li>Median of each bin, weight by the percentage observed, sum across bins => average.</li>
+             <li>Since all the graphs had relatively the same shape and similar averages, the thresholds are set static across all years to min = 76.665, median = 166.165, and max = 255.165 after using the Muir equation for N. Pikeminnows.</li>
+             </ul>
+             <p>Climate years:</p>
+             <ul>
+             <li>While we were able to get data for predators in a few years to determine their thresholds, a large majority of years did not have such collected data. Thus, using Oceanic Niño Index (ONI) and Pacific Decadal Oscillation (PDO), we categorized both dataset values into negative, neutral, and positive. If a year had positive values from both datasets, the year would be labeled as “positive,” vice versa for “negative.” If the year had differing values, it would be labeled as “neutral.”</li>
+             <li>From there, we took the threshold data that was available to us and separated them based on their year’s climate and then averaged them to determine a “default” threshold for each of the three climates.</li>
+             </ul>
+             </div>
+             "
+             )
+      )
+    )
+  )
+}
+
+#' background_page Server Functions
+#'
+#' @noRd
+mod_background_page_server <- function(id){
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+
+  })
+}
+
+## To be copied in the UI
+# mod_background_page_ui("background_page_1")
+
+## To be copied in the server
+# mod_background_page_server("background_page_1")

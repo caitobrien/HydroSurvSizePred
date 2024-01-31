@@ -1,4 +1,4 @@
-#' mainpage UI Function
+#' main_page UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_mainpage_ui <- function(id){
+mod_main_page_ui <- function(id){
   ns <- NS(id)
   tagList(
     fluidRow(
@@ -51,7 +51,7 @@ mod_mainpage_ui <- function(id){
 #' mainpage Server Functions
 #'
 #' @noRd
-mod_mainpage_server <- function(id){
+mod_main_page_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -176,7 +176,7 @@ mod_mainpage_server <- function(id){
 }
 
 ## To be copied in the UI
-# mod_mainpage_ui("mainpage_1")
+# mod_main_page_ui("main_page_1")
 
 ## To be copied in the server
-# mod_mainpage_server("mainpage_1")
+# mod_main_page_server("main_page_1")

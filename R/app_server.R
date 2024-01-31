@@ -7,7 +7,11 @@
 app_server <- function(input, output, session) {
   # Your application server logic
 
-  mod_mainpage_server("mainpage_1")
+  mod_welcome_page_server("welcome_page_1")
+
+  mod_main_page_server("main_page_1")
+
+  mod_background_page_server("background_page_1")
 
 
 }
