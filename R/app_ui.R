@@ -12,12 +12,18 @@ library(shinydashboard)
 
 # Generating sample data
 set.seed(123)
-data <- data.frame(
-  year = rep(2000:2004,20),
-  prey_size = rnorm(100, mean = 50, sd = 10),
-  predator1_size = rnorm(100, mean = 40, sd = 8),
-  predator2_size = rnorm(100, mean = 45, sd = 6)
-)
+data <- expand_grid(
+  year = 2000:2005,
+  doy = 150:200,
+  location = c("BON", "LGR"),
+  pass_type = c("T", "R")
+) %>%
+  mutate(
+    length = rep( rnorm(165, mean = 120, sd = 10), length.out = 1224),
+    pctsurv = rep(rnorm(100, mean = 30, sd = 15), length.out = 1224),
+    pctprey = rep(rnorm(100, mean = 50, sd =20), length.out = 1224),
+    predator = rep(c("PH", "NH"), length.out = 1224),
+    date = as.Date(paste(year,doy), format = "%Y %j"))
 
 
 app_ui <- function(request) {
@@ -51,7 +57,8 @@ app_ui <- function(request) {
                   mod_main_page_ui("main_page_1")),
           tabItem("subpage1", h2("Smolt Size Distributions"),
                   mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
-          tabItem("subpage2", h2("Predation Risk Content")),
+          tabItem("subpage2", h2("Predation Risk Content"),
+                  mod_subpage2_predrisk_ui("mod_subpage2_predrisk_1")),
           tabItem("subpage3", h2("Estimated Survival Content")),
           tabItem("background_page",
                   mod_background_page_ui("background_page_1"))

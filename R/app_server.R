@@ -11,13 +11,16 @@ app_server <- function(input, output, session) {
 
   mod_main_page_server("main_page_1")
 
-  mod_background_page_server("background_page_1")
-
   #retrieve reactive values to use in plots and tables as needed
   dataselect_reactives <- mod_subpage1_smoltsize_dataselection_server("subpage1_smoltsize_dataselection_1")
+
   #year_display <- dataselect_reactives$year_display
 
   mod_subpage1_smoltsize_server("subpage1_smoltsize_1")
+
+  mod_subpage2_predrisk_server("mod_subpage2_predrisk_1")
+
+  mod_background_page_server("background_page_1")
 
 
 }

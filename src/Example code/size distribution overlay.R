@@ -19,16 +19,16 @@ mod_main_page_ui <- function(id){
                      label = "Reset Selections"),
         actionButton(inputId = ns("button_update"),
                      label = "Update"),
-          # prompt to select all years or by year
-          selectInput(
-            inputId = ns("year_display"),
-            label = "View by",
-            choices = c("All Years", "Year"),
-            selected = "All Years"
-          ),
-          uiOutput(ns("select_year"))
-
+        # prompt to select all years or by year
+        selectInput(
+          inputId = ns("year_display"),
+          label = "View by",
+          choices = c("All Years", "Year"),
+          selected = "All Years"
         ),
+        uiOutput(ns("year_picker"))
+
+      ),
       shinydashboard::box(
         width = 12,
         status = "info",
@@ -61,7 +61,7 @@ mod_main_page_ui <- function(id){
         width = 12
       )
     )
-    )
+  )
 }
 
 #' mainpage Server Functions
@@ -72,7 +72,7 @@ mod_main_page_server <- function(id){
     ns <- session$ns
 
     # Render the UI for the year picker
-    output$select_year <- renderUI({
+    output$year_picker <- renderUI({
       ns <- session$ns
 
       if (input$year_display == "Year") {
@@ -93,9 +93,9 @@ mod_main_page_server <- function(id){
       if (input$year_display == "All Years") {
         data
       } else if (input$year_display == "Year" && !is.null(input$select_year)) {
-         data %>%
+        data %>%
           filter(year == input$select_year)
-          group_by(year) %>%
+        group_by(year) %>%
           summarize_all(list(mean = mean))
       } else {
         NULL
