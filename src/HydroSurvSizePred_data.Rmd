@@ -1,0 +1,149 @@
+---
+title: "HydroSurvSizePred_Data"
+output: html_document
+date: "2024-02-01"
+---
+
+```{r packages}
+library(tidyverse) #data wrangling
+```
+
+# Size
+Data includes detection data of spring/summer Chinook: 
+
+- t_rear_type: H-hatchery, W-wild, U-unknown
+
+- t_run:  1- spring, 2-summer, 5-unknown
+
+- pass_type: T-tranport, ROR-run-of-river; redesignated DART codes(see code below); removed code: S-Sample and 99-Bad Barge Trip
+
+- smolt migration years: all
+
+- smolt migration doy: 80-160
+
+- LWG length: must have length, between 55 - 165
+
+- last detections: LWG-Lower Granite Dam and BON- Bonneville Dam last detections
+
+
+```{r import_fish_data}
+df.fish.raw<-read.csv(here::here("data", "LWG2AdultGrowth.csv"))
+
+df<-df.fish.raw %>% 
+  filter(!(is.na(lwg_last) & is.na(bon_last))) %>%  #confirm last detection at LWG or BON
+  filter(between(lwg_length, 55, 165) |
+           between(bon_length, 55, 165)) %>% #filter lengths 55:165
+   mutate(across(c(lwg_last, bon_last), lubridate::ymd, .names = NULL),
+          year = lubridate::year(lwg_last),
+          doy = lubridate::yday(lwg_last)) %>% 
+  filter(between(doy, 80, 160)) %>% #filter doy, 80:160
+  # redesignate tranportation codes-- ROR = ROR and SB, SD, SBD, SPD, TB, TBD switched to ROR, 99 and S removed, only T = T
+  mutate(pass_type_T_R = case_when(
+    str_detect(pass_type, "S") & str_length(pass_type) > 1 ~ "ROR",
+    str_detect(pass_type, "S") & str_length(pass_type) == 1 ~ "remove",
+    str_detect(pass_type, "TB") ~ "ROR",
+    str_detect(pass_type, "TBD") ~ "ROR",
+    str_detect(pass_type, "ROR") ~ "ROR",
+    str_detect(pass_type, "T") ~ "T",
+    .default = "remove"
+  )) %>%
+  filter(pass_type_T_R != "remove") %>% 
+  pivot_longer(cols = c(lwg_length, bon_length), names_to = "site", values_to = "length", values_drop_na = TRUE) %>% 
+  mutate(site = toupper(str_remove(site, "_length"))) %>% 
+  filter(year == c(1993:2020)) %>% 
+  #add levels for additional facetting used in the smoltsize histogram subpage1
+   mutate(by_month = lubridate::month(lwg_last, label = TRUE, abbr = FALSE),
+         day_month = lubridate::day(lwg_last)) %>% 
+  arrange(by_month, day_month) %>%  # Arrange the dataframe
+  mutate(by_half_month = ifelse(day_month <= 15, paste0("Early ", by_month), paste0("Late ", by_month))) %>%
+  mutate(by_half_month = factor(by_half_month, levels = unique(by_half_month))) %>% 
+  mutate(across(c(year, doy, length), as.numeric))
+
+
+readr::write_csv(df, here::here("data", "spsuCH_subset.csv"))
+
+```
+
+
+```{r explore_fish_data, echo=TRUE}
+#view data
+df.fish %>% 
+  group_by(t_rear_type) %>% 
+  summarise(n())
+
+df.fish %>% 
+  group_by(t_run) %>% 
+  summarise(n())
+
+df.fish %>% 
+  group_by(pass_type_T_R) %>% 
+  summarise(n())
+
+df.fish %>% 
+  group_by(t_rear_type, t_run, pass_type_T_R) %>% 
+  summarise(n())
+
+
+hist(df.fish$lwg_length)
+hist(df.fish$doy)
+hist(df.fish$year)
+
+df.fish %>% 
+  group_by(site, year) %>% 
+  summarise(n())
+  
+```
+```{r predator_thresholds}
+predator_thresholds<-data_frame(species = c("N. Pikeminnow", "Pacific Hake"),
+                                median = c(166.165, 110),
+                                min = c(76.665, 70),
+                                max = c(255.165, 200))
+```
+
+```{r p_size_histogram, fig.height=8, fig.width=10}
+
+
+df.fish %>% 
+  ggplot(aes(x = length))+
+  geom_histogram(aes(color = site, fill = site), alpha= .25) + 
+  labs( x = "Smolt fork length (mm)", 
+        y = "Number of smolt", 
+        color = "Detection site",
+        fill = "Detection site")+
+  scale_fill_manual (values = c("steelblue4", "#b47747"), 
+                     labels = c("BON", "LWG"))+
+    scale_color_manual(values = c("steelblue4", "#b47747"),
+                       labels = c("BON", "LWG"))+
+  theme_light() +
+  facet_wrap(~year, scales = "free_y") + 
+  theme(strip.text = element_text(color = "black"))
+
+```
+
+```{r fct_facet_size_histogram}
+fct_size_histogram<-function(facet_by){
+p<- df.fish_facet %>% 
+  ggplot(aes(x = length))+
+  geom_histogram(aes(color = site, fill = site), alpha= .25) + 
+  labs( x = "Smolt fork length (mm)", 
+        y = "Number of smolt", 
+        color = "Detection site",
+        fill = "Detection site")+
+  scale_fill_manual (values = c("steelblue4", "#b47747"), 
+                     labels = c("BON", "LWG"))+
+    scale_color_manual(values = c("steelblue4", "#b47747"),
+                       labels = c("BON", "LWG"))+
+  theme_light() +
+  facet_wrap(as.formula(paste0("~", facet_by)), scales = "free_y") + 
+  theme(strip.text = element_text(color = "black"))
+  
+  return(p)
+}
+
+fct_size_histogram( "by_half_month")
+
+```
+
+
+# Predation
+# Survival
