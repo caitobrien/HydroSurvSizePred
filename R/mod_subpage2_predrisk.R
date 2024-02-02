@@ -17,12 +17,22 @@ mod_subpage2_predrisk_ui <- function(id){
       title = "Predation Risk by year",
       status = "info",
 
+        # select locations
+        selectInput(
+          inputId = ns("select_loc"),
+          label = "Locations",
+          choices = unique(df$site),
+          selected = unique(df$site),
+          # width = "200px",
+          multiple = T
+        ),
+
       sliderInput(
         inputId = ns("year_slider"),
         label = "Year(s) released",
-        min = min(data$year),
-        max = max(data$year),
-        value = c(min(data$year), max(data$year)),
+        min = min(df$year),
+        max = max(df$year),
+        value = c(min(df$year), max(df$year)),
         step = 1,
         sep = ""),
 
@@ -42,14 +52,15 @@ mod_subpage2_predrisk_server <- function(id){
 
     # Filter data based on slider input
     filtered_data <- reactive({
-      data %>%
-        filter(year >= input$year_slider[1] & year <= input$year_slider[2])
+      df %>%
+        filter(year >= input$year_slider[1] & year <= input$year_slider[2],
+               site %in% c(input$select_loc))
     })
 
 
     #render plot
     output$predrisk_plot_allyears<- renderPlot(
-      ggplot(filtered_data(), aes(x=location, y=pctprey, color = predator))+
+      ggplot(filtered_data(), aes(x=site, y=length, color = site))+
         geom_bar(stat = "identity", position = position_dodge()) +
         facet_wrap(~year, ncol = 4) + theme_light()
     )
