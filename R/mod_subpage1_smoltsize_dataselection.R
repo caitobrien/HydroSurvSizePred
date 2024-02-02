@@ -10,40 +10,44 @@
 mod_subpage1_smoltsize_dataselection_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    column(
-      width = 3,
+
+    fluidRow(
       # select locations
-      selectInput(
-        inputId = ns("select_loc"),
-        label = HTML("Locations <br>"),
-        choices = c("Lower Granite (LWG)", "Bonneville (BON)"),
-        selected = "Lower Granite (LWG)",
-        # width = "200px",
-        multiple = T
+      column(
+        width = 3,
+        selectInput(
+          inputId = ns("select_loc"),
+          label = "Locations",
+          choices = unique(data.test$site),
+          selected = unique(data.test$site),
+          multiple = TRUE
+          )
+        ),
+
+      #select predator thresholds
+      column(
+        width = 3,
+        selectInput(
+          inputId = ns("select_predator"),
+          label = "Predator thresholds",
+          choices = unique(predator_thresholds$species),
+          selected = unique(predator_thresholds$species),
+          multiple = TRUE
+          )
+        ),
+
+      #select year
+      column(
+        width = 3,
+          sliderInput(
+            inputId = ns("year_slider"),
+            label = "Year(s) released",
+            min = min(df$year),
+            max = max(df$year),
+            value = c(min(df$year), max(df$year)),
+            step = 1,
+            sep = "")
       )
-    ),
-    column(
-      width = 3,
-      # select predators
-      selectInput(
-        inputId = ns("select_pred"),
-        label = "Include predators' prey size threshold",
-        choices = c("N. Pikeminnow", "Pacific Hake"),
-        selected = "Pacific Hake",
-        # width = "200px",
-        multiple = T
-      )
-    ),
-    column(
-      width = 3,
-      # prompt to select all years or by year
-      selectInput(
-        inputId = ns("year_display"),
-        label = "View by",
-        choices = c("All Years", "Year"),
-        selected = "All Years"
-      ),
-      uiOutput(ns("year_picker"))
     )
   )
 }
@@ -55,29 +59,26 @@ mod_subpage1_smoltsize_dataselection_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # Render the UI for the year picker
-    output$year_picker <- renderUI({
-      ns <- session$ns
-
-      if (input$year_display == "Year") {
-        sliderInput(
-          inputId = ns("select_years"),
-          label = "Year released",
-          min = 1993,
-          max = 2022,
-          value = c(2017, 2022),
-          sep = ""
-        )
-      } else {
-        NULL
-      }
+    #reactive for predator thresholds
+    predators_selected <- reactive({
+      input$select_predator
     })
 
-    # # Reactive for year_display
-    # year_display <- reactive({
-    #   input$year_display
-    # })
+    # reactive for year and location selection to filter data used in plots
+    filtered_data<- reactive({
 
+      df %>%
+        dplyr::filter(
+          site %in% c(input$select_loc),
+          year %in% c(input$year_slider[1]:input$year_slider[2])
+          )
+    })
+
+    # Return the reactive expression(s)
+    return(list(
+      filtered_data = reactive(filtered_data),
+      predators_selected = reactive(predators_selected)
+    ))
   })
 }
 
