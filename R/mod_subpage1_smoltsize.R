@@ -46,8 +46,13 @@ mod_subpage1_smoltsize_ui <- function(id) {
                    plotOutput(
                      outputId = ns("annual_plot"))
                    ),
-          tabPanel("Monthly"),
-          tabPanel("Half-monthly")
+          tabPanel("Monthly",
+                   plotOutput(
+                     outputId = ns("monthly_plot"))
+                   ),
+          tabPanel("Half-monthly",
+                   plotOutput(
+                     outputId = ns("half_monthly_plot")))
         ),
         fluidRow(
           column(
@@ -69,74 +74,20 @@ mod_subpage1_smoltsize_server <- function(id, data, predators_selected){
     ns <- session$ns
 
     output$annual_plot <- renderPlot({
-
-   p<- data()%>%
-        ggplot(aes(x = length))+
-        geom_histogram(aes(color = site, fill = site), alpha= .25) +
-        labs( x = "Smolt fork length (mm)",
-              y = "Number of smolt",
-              color = "Detection site",
-              fill = "Detection site")+
-        # scale_fill_manual (values = c("steelblue4", "#b47747")) +
-        # scale_color_manual(values = c("steelblue4", "#b47747")) +
-        theme_light() +
-       facet_wrap(~year, ncol = 4, scales = "free_y")+
-        theme(strip.text = element_text(color = "black"))
-
-
-   # Add geom_vlines for selected predators
-   if (!is.null(predators_selected())) {
-     for (predator in predators_selected()) {
-       thresholds <- predator_thresholds %>%
-         filter(species == predator)
-
-       # Set colors based on predator
-       line_color <- ifelse(predator == "N. Pikeminnow", "darkgreen", "goldenrod")
-       dash_color <- ifelse(predator == "N. Pikeminnow", "darkgreen", "goldenrod")
-
-       p <- p +
-         geom_vline(
-           xintercept = thresholds$median,
-           color = line_color,
-           linetype = "solid",
-           show.legend = TRUE,
-           aes(linetype = "Median", color = "Median")
-         ) +
-         geom_vline(
-           xintercept = thresholds$min,
-           linetype = "dashed",
-           color = dash_color,
-           show.legend = TRUE,
-           aes(linetype = "Min/Max", color = "Min/Max")
-         ) +
-         geom_vline(
-           xintercept = thresholds$max,
-           linetype = "dashed",
-           color = dash_color,
-           show.legend = FALSE,
-           aes(linetype = "Min/Max", color = "Min/Max")
-         )
-     }
-   }
-# Add custom legend for color (histogram) and linetype (vlines)
-     p <- p +
-     scale_fill_manual(
-       name = "Detection Site",
-       values = c("steelblue4", "#b47747"),
-       labels = c("BON", "LWG")
-     ) +
-     scale_color_manual(
-       name = "Predator Species",
-       values = c("darkgreen", "goldenrod"),
-       labels = c("N. Pikeminnow", "Pacific Hake")
-     ) +
-     scale_linetype_manual(
-       name = "Threshold",
-       values = c("solid", "dashed"),
-       labels = c("Median", "Min/Max")
-     )
-p
+      fct_smoltsize_histogram_plot(data = data(), facet_by = "year")
     })
+
+    output$monthly_plot <- renderPlot({
+      fct_smoltsize_histogram_plot(data = data(), facet_by = "by_month")
+    })
+
+    output$half_monthly_plot <- renderPlot({
+      fct_smoltsize_histogram_plot(data = data(), facet_by = "by_half_month")
+    })
+
+
+
+    print(predators_selected)
   })
 }
 
