@@ -146,4 +146,11 @@ fct_size_histogram( "by_half_month")
 
 
 # Predation
+```{r import_pred_data}
+
+df.pred.pike.raw<-read.csv(here::here("data", "1854-2022 Pike Data.csv"))
+df.pred.hake.raw<-read.csv(here::here("data", "1993-2022 Hake Prey Size Summary.csv"))
+
+```
+
 # Survival
