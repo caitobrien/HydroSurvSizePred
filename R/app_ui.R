@@ -9,13 +9,14 @@ library(ggplot2)
 library(dplyr)
 library(shinyWidgets)
 library(shinydashboard)
+library(tidyverse)
 
 # Generating sample data
 set.seed(123)
-data <- expand_grid(
+data.test <- expand.grid(
   year = 2000:2005,
   doy = 150:200,
-  location = c("BON", "LGR"),
+  site = c("BON", "LWG"),
   pass_type = c("T", "R")
 ) %>%
   mutate(
@@ -24,6 +25,8 @@ data <- expand_grid(
     pctprey = rep(rnorm(100, mean = 50, sd =20), length.out = 1224),
     predator = rep(c("PH", "NH"), length.out = 1224),
     date = as.Date(paste(year,doy), format = "%Y %j"))
+
+df<-read.csv(here::here("data", "spsuCH_subset.csv"))
 
 
 app_ui <- function(request) {
@@ -58,7 +61,7 @@ app_ui <- function(request) {
           tabItem("subpage1", h2("Smolt Size Distributions"),
                   mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
           tabItem("subpage2", h2("Predation Risk Content"),
-                  mod_subpage2_predrisk_ui("mod_subpage2_predrisk_1")),
+                   mod_subpage2_predrisk_ui("mod_subpage2_predrisk_1")),
           tabItem("subpage3", h2("Estimated Survival Content")),
           tabItem("background_page",
                   mod_background_page_ui("background_page_1"))
