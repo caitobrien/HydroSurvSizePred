@@ -74,15 +74,15 @@ mod_subpage1_smoltsize_server <- function(id, data, predators_selected){
     ns <- session$ns
 
     output$annual_plot <- renderPlot({
-      fct_smoltsize_histogram_plot(data = data(), facet_by = "year")
+      fct_smoltsize_histogram_plot(data = data(), facet_by = "year", predators_selected = predators_selected())
     })
 
     output$monthly_plot <- renderPlot({
-      fct_smoltsize_histogram_plot(data = data(), facet_by = "by_month")
+      fct_smoltsize_histogram_plot(data = data(), facet_by = "by_month", predators_selected = predators_selected())
     })
 
     output$half_monthly_plot <- renderPlot({
-      fct_smoltsize_histogram_plot(data = data(), facet_by = "by_half_month")
+      fct_smoltsize_histogram_plot(data = data(), facet_by = "by_half_month", predators_selected = predators_selected())
     })
 
 
@@ -90,6 +90,7 @@ mod_subpage1_smoltsize_server <- function(id, data, predators_selected){
     print(predators_selected)
   })
 }
+
 
 
 ## To be copied in the UI

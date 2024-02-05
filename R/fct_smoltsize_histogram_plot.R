@@ -5,78 +5,61 @@
 #'
 #'
 #' @noRd
+levels(df$by_month)
+fct_smoltsize_histogram_plot <- function(data, facet_by, predators_selected){
 
-fct_smoltsize_histogram_plot <- function(data, facet_by){
-  p <- data %>%
+  #create base plot
+   p <- data %>%
     ggplot(aes(x = length)) +
-    geom_histogram(aes(color = site, fill = site), alpha = 0.25) +
+    geom_histogram(aes( fill = site), alpha = 0.25) +
     labs(
       x = "Smolt fork length (mm)",
       y = "Number of smolt",
-      color = "Detection site",
-      fill = "Detection site"
+      color = "Predator Species",
+      fill = "Detection site",
+      linetype = "Predator unit"
     ) +
     theme_light() +
     facet_wrap(~get(facet_by), ncol = 4, scales = "free_y") +
     theme(strip.text = element_text(color = "black"))
 
-  # if (!is.null(predators_selected())) {
-  #   for (predator in predators_selected()) {
-  #     thresholds <- predator_thresholds %>%
-  #       filter(species == predator)
-  #
-  #     line_color <- ifelse(predator == "N. Pikeminnow", "darkgreen", "goldenrod")
-  #     dash_color <- ifelse(predator == "N. Pikeminnow", "darkgreen", "goldenrod")
-  #
-  #     p <- p +
-  #       geom_vline(
-  #         xintercept = thresholds$median,
-  #         color = line_color,
-  #         linetype = "solid",
-  #         show.legend = TRUE,
-  #         aes(linetype = "Median", color = "Median")
-  #       ) +
-  #       geom_vline(
-  #         xintercept = thresholds$min,
-  #         linetype = "dashed",
-  #         color = dash_color,
-  #         show.legend = TRUE,
-  #         aes(linetype = "Min/Max", color = "Min/Max")
-  #       ) +
-  #       geom_vline(
-  #         xintercept = thresholds$max,
-  #         linetype = "dashed",
-  #         color = dash_color,
-  #         show.legend = FALSE,
-  #         aes(linetype = "Min/Max", color = "Min/Max")
-  #       )
-  #   }
-  # }
-  #
-  # # Add custom legend for color (histogram) and linetype (vlines)
-  # p <- p +
-  #   scale_fill_manual(
-  #     name = "Detection Site",
-  #     values = c("steelblue4", "#b47747"),
-  #     title = "Detection Site"
-  #   ) +
-  #   scale_color_manual(
-  #     name = "Predator Species",
-  #     values = c("darkgreen", "goldenrod"),
-  #     title = "Predator Species"
-  #   ) +
-  #   scale_linetype_manual(
-  #     name = "Threshold",
-  #     values = c("solid", "dashed"),
-  #     title = "Threshold"
-  #   ) +
-  #   guides(
-  #     fill = guide_legend(order = 1),
-  #     color = guide_legend(order = 2),
-  #     linetype = guide_legend(order = 3)
-  #   )
+
+  # If predators_select has a single value, proceed with the plot
+  if (length(predators_selected) == 1) {
+    species <- predators_selected
+    vline_color <- ifelse(species == "N. Pikeminnow", "darkgreen", "goldenrod")
+
+    p <- p +
+      geom_vline(
+        xintercept = ifelse(species == "N. Pikeminnow", 166.165, 110),
+        color = vline_color,
+        linetype = "solid",
+        show.legend = TRUE,
+        aes(linetype = paste0(species, "Median"), color = paste0(species, "Median"))
+      )
+  } else if (is.null(predators_selected)) {
+    # If predators_selected is NULL, do nothing and continue to the next block
+  } else {
+    # If more than one value is selected, show both median lines on the plot
+    p <- p +
+      geom_vline(
+        xintercept = 166.165,
+        color = "darkgreen",
+        linetype = "solid",
+        show.legend = TRUE,
+        aes(linetype = "N. Pikeminnow Median", color = "N. Pikeminnow Median")
+      ) +
+      geom_vline(
+        xintercept = 110,
+        color = "goldenrod",
+        linetype = "solid",
+        show.legend = TRUE,
+        aes(linetype = "Pacific Hake Median", color = "Pacific Hake Median")
+      )
+  }
 
   return(p)
+
 }
 
 
