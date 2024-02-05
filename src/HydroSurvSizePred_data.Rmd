@@ -55,12 +55,15 @@ df<-df.fish.raw %>%
    mutate(by_month = lubridate::month(lwg_last, label = TRUE, abbr = FALSE),
          day_month = lubridate::day(lwg_last)) %>% 
   arrange(by_month, day_month) %>%  # Arrange the dataframe
-  mutate(by_half_month = ifelse(day_month <= 15, paste0("Early ", by_month), paste0("Late ", by_month))) %>%
-  mutate(by_half_month = factor(by_half_month, levels = unique(by_half_month))) %>% 
+  mutate(by_half_month = factor(ifelse(day_month <= 15, paste0("Early ", by_month), paste0("Late ", by_month)), levels = c("Late March","Early April", "Late April", "Early May", "Late May", "Early June"), ordered = TRUE)) %>% #need a better way to do this
   mutate(across(c(year, doy, length), as.numeric))
 
 
 readr::write_csv(df, here::here("data", "spsuCH_subset.csv"))
+
+
+
+
 
 ```
 
