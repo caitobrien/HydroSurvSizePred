@@ -5,13 +5,18 @@
 #'
 #'
 #' @noRd
-levels(df$by_month)
-fct_smoltsize_histogram_plot <- function(data, facet_by, predators_selected){
+
+fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_selected, graph){
+
+  #Determine the geom function based on the selected graph type
+  geom_function <- switch(graph,
+                          "Histogram" = geom_histogram(aes(fill = site), binwidth = 5),
+                          "Density" = geom_density(aes(fill = site)))
 
   #create base plot
    p <- data %>%
     ggplot(aes(x = length)) +
-    geom_histogram(aes( fill = site), alpha = 0.25) +
+    geom_function +
     labs(
       x = "Smolt fork length (mm)",
       y = "Number of smolt",
@@ -19,6 +24,8 @@ fct_smoltsize_histogram_plot <- function(data, facet_by, predators_selected){
       fill = "Detection site",
       linetype = "Predator unit"
     ) +
+     scale_fill_manual (values = c("steelblue4", "#b47747"),
+                        labels = c("LWG", "BON"))+
     theme_light() +
     facet_wrap(~get(facet_by), ncol = 4, scales = "free_y") +
     theme(strip.text = element_text(color = "black"))

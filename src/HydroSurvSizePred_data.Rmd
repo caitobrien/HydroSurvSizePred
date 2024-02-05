@@ -106,7 +106,7 @@ predator_thresholds<-data_frame(species = c("N. Pikeminnow", "Pacific Hake"),
 ```{r p_size_histogram, fig.height=8, fig.width=10}
 
 
-df.fish %>% 
+df %>% 
   ggplot(aes(x = length))+
   geom_histogram(aes(color = site, fill = site), alpha= .25) + 
   labs( x = "Smolt fork length (mm)", 
@@ -124,13 +124,60 @@ df.fish %>%
 ```
 
 ```{r fct_facet_size_histogram}
-fct_size_histogram<-function(facet_by){
-p<- df.fish_facet %>% 
+
+
+
+fct_size_histogram<-function(facet_by, graph){
+  
+  #Determine the geom function based on the selected graph type
+  geom_function <- switch(graph,
+                          "Histogram" = geom_histogram(aes(fill = site), binwidth = 5),
+                          "Density" = geom_density(aes(fill = site)))
+  
+  
+p<- df %>% 
   ggplot(aes(x = length))+
-  geom_histogram(aes(color = site, fill = site), alpha= .25) + 
+  geom_function + 
   labs( x = "Smolt fork length (mm)", 
         y = "Number of smolt", 
         color = "Detection site",
+        fill = "Detection site")+
+  scale_fill_manual (values = c("steelblue4", "#b47747"), 
+                     labels = c("BON", "LWG"))+
+  theme_light() +
+  facet_wrap(as.formula(paste0("~", facet_by)), scales = "free_y") + 
+  theme(strip.text = element_text(color = "black"))
+  
+  return(p)
+}
+
+fct_size_histogram(facet_by =  "by_half_month", graph = "Histogram")
+
+```
+
+```{r p_size_density, fig.height=8, fig.width=10}
+df %>% 
+  ggplot(aes(x = length))+
+  geom_density(aes( fill = site)) + 
+  labs( x = "Smolt fork length (mm)", 
+        y = "Number of smolt", 
+       
+        fill = "Detection site")+
+  scale_fill_manual (values = c("steelblue4", "#b47747"), 
+                     labels = c("BON", "LWG"))+
+  facet_wrap(~year, scales = "free_y") + 
+  theme(strip.text = element_text(color = "black"))
+```
+
+
+
+```{r fct_facet_size_density}
+fct_size_histogram<-function(facet_by){
+p<- df.fish_facet %>% 
+  ggplot(aes(x = length))+
+  geom_density(aes( fill = site), alpha= .25) + 
+  labs( x = "Smolt fork length (mm)", 
+        y = "Number of smolt", 
         fill = "Detection site")+
   scale_fill_manual (values = c("steelblue4", "#b47747"), 
                      labels = c("BON", "LWG"))+
