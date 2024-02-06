@@ -64,6 +64,19 @@ mod_subpage1_smoltsize_dataselection_server <- function(id) {
       input$select_predator
     })
 
+    # Reactive for plot height
+    plot_height<- reactive({
+      req(input$year_slider)
+      # Extract the range of years selected
+      nyears <- input$year_slider[2] - input$year_slider[1] + 1
+
+      if (nyears > 3) {
+        return(500 + (nyears-3)*120)
+      }else {
+        return(500)
+        }
+    })
+
     # reactive for year and location selection to filter data used in plots
     filtered_data<- reactive({
 
@@ -77,7 +90,8 @@ mod_subpage1_smoltsize_dataselection_server <- function(id) {
     # Return the reactive expression(s)
     return(list(
       filtered_data = reactive(filtered_data),
-      predators_selected = reactive(predators_selected)
+      predators_selected = reactive(predators_selected),
+      plot_height = reactive(plot_height)
     ))
   })
 }

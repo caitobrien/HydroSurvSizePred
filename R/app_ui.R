@@ -10,7 +10,7 @@ library(dplyr)
 library(shinyWidgets)
 library(shinydashboard)
 library(tidyverse)
-
+library(ggh4x)
 # Generating sample data
 set.seed(123)
 data.test <- expand.grid(
@@ -58,7 +58,7 @@ app_ui <- function(request) {
                   mod_welcome_page_ui("welcome_page_1")),
           tabItem("main_page", h2("Summary of smolt size, predation risk and estimated survival for Chinook Salmon"),
                   mod_main_page_ui("main_page_1")),
-          tabItem("subpage1", h2("Smolt Size Distributions"),
+          tabItem("subpage1",
                   mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
           tabItem("subpage2", h2("Predation Risk Content"),
                    mod_subpage2_predrisk_ui("mod_subpage2_predrisk_1")),
