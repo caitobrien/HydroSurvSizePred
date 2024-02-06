@@ -24,11 +24,19 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
       fill = "Detection site",
       linetype = "Predator unit"
     ) +
-     scale_fill_manual (values = c("steelblue4", "#b47747"),
+     scale_fill_manual (values = c("LWG" = "steelblue4", "BON" = "#b47747"),
                         labels = c("LWG", "BON"))+
     theme_light() +
     facet_wrap(~get(facet_by), ncol = 4, scales = "free_y") +
     theme(strip.text = element_text(color = "black"))
+
+
+   # Facet based on facet_by
+   if (facet_by %in% c("by_month", "by_half_month")) {
+     p <- p + facet_grid(year ~ get(facet_by))
+   } else if (facet_by == "year") {
+     p <- p + facet_wrap(~get(facet_by), ncol = 4, scales = "free_y")
+   }
 
 
   # If predators_select has a single value, proceed with the plot
@@ -65,8 +73,26 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
       )
   }
 
+
+   # Calculate summary statistics per location
+   summary_data <- data %>%
+     group_by(
+       year,
+       ifelse(facet_by %in% c("month", "half_month"), facet_by, site),
+       site
+     ) %>%
+     summarise(total_smolt = n_distinct(tag_id))
+
+   # Add text annotation in the upper right-hand corner
+   p <- p +
+     geom_text(
+       data = summary_data,
+       aes(x = Inf, y = Inf, label = paste(site, "n:", total_smolt)),
+       hjust = 1, vjust = 1, size = 3, color = "black", fontface = "bold",
+       position = position_nudge(x = 0.1, y = 1)
+     )
+
   return(p)
 
 }
-
 
