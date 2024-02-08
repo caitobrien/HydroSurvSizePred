@@ -6,6 +6,7 @@ date: "2024-02-01"
 
 ```{r packages}
 library(tidyverse) #data wrangling
+library(here) #file path designation
 ```
 
 # Size
@@ -125,8 +126,6 @@ df %>%
 
 ```{r fct_facet_size_histogram}
 
-
-
 fct_size_histogram<-function(facet_by, graph){
   
   #Determine the geom function based on the selected graph type
@@ -198,9 +197,178 @@ fct_size_histogram( "by_half_month")
 # Predation
 ```{r import_pred_data}
 
-df.pred.pike.raw<-read.csv(here::here("data", "1854-2022 Pike Data.csv"))
-df.pred.hake.raw<-read.csv(here::here("data", "1993-2022 Hake Prey Size Summary.csv"))
+df.pred.hake.raw<-read_csv(here::here("data/Hake Year Data", "Hake Data (All).csv")) 
+# data from 1998 to 2004 pulled data from Emmett et al 2011; 2017 and 2019 pulled from ? 
+#multiple files for 2017 & 2019, if using 2017/2019 values in `Hake Data (All).csv` then SL for 2017/2019 are negative, but final summary data reports values for 2017, 2015, 2019 and none are negative. What was done there? 
+
+#has incorrect # for 2001/2002?
+df.pred.hake.raw[6,1] <- 2002
+
 
 ```
+
+## Pacific Hake
+
+```{r convert_predlengths_to_preylengths}
+
+
+# Define the equation: y ~ 0.350838x - 33.3482 (Muir et al 2006)
+hake_convert_y <- function(x) {
+  return(0.350838 * x - 33.3482)
+}
+
+
+# Apply the equation to each non-year column of the dataset
+hake_results_df <- df.pred.hake.raw %>%
+  mutate_at(vars(-year), ~ hake_convert_y(.)) %>% 
+  mutate(year = as.numeric(year))
+
+# Save the SL results to a CSV file
+write.csv(hake_results_df, file = here::here("data/Hake Year Data", "hake_predtoprey_SL_results.csv"), row.names = FALSE)
+
+
+
+#plot explained in methods
+
+#including 2017/2019
+ggplot(hake_results_df, aes(x = year))+
+  geom_point(aes(y= median)) +
+  geom_line(aes(y= median), linetype = "solid") +
+  geom_point(aes(y= min)) +
+  geom_line(aes(y= min), linetype = "dotted") +
+    geom_point(aes(y= max)) +
+  geom_line(aes(y= max), linetype = "dotted") +
+    geom_point(aes(y= q1)) +
+  geom_line(aes(y= q1), linetype = "dashed") +
+      geom_point(aes(y= q3)) +
+  geom_line(aes(y= q3), linetype = "dashed") +
+  geom_hline(yintercept = 0)
+
+
+#removing 2017:2019
+ggplot(filter(hake_results_df, year <2015), aes(x = year))+
+  geom_point(aes(y= median)) +
+  geom_line(aes(y= median), linetype = "solid") +
+  geom_point(aes(y= min)) +
+  geom_line(aes(y= min), linetype = "dotted") +
+    geom_point(aes(y= max)) +
+  geom_line(aes(y= max), linetype = "dotted") +
+    geom_point(aes(y= q1)) +
+  geom_line(aes(y= q1), linetype = "dashed") +
+      geom_point(aes(y= q3)) +
+  geom_line(aes(y= q3), linetype = "dashed")
+```
+
+adding climate data (Negative, Neutral, Positive) to predict all years thresholds
+*no positive year data to get median
+
+```{r import_climate_data}
+#add automated version scrubbing from website
+
+#pull files for now
+df_climate<-read.csv(file = here::here("data/Climate Data", "ONI_PDO Data.csv"))
+
+
+#assign climate designation per year based on pdo/oni classification
+df_climate <-df_climate %>% 
+  filter(between(year, 1993, 2022)) %>% 
+    mutate(
+    pdo.oni_group = ifelse(pdo_group == oni_group, pdo_group, "neutral"),
+    year = as.numeric(year)
+  )
+```
+
+
+```{r combine_climate&hake_predict_data}
+#expand known data to add estimation based on climate designation
+expanded_df <- hake_results_df %>%
+  full_join(df_climate %>% select(year, pdo.oni_group), by = "year") %>% 
+  arrange(year)
+ 
+     #something weird with 2002--fix later
+    expanded_df<-expanded_df[-11,]
+    expanded_df[10,7] <- "neutral"
+    
+#average thresholds based on climate designation   
+expanded_averages_df<-expanded_df %>% 
+  group_by(pdo.oni_group) %>% 
+   mutate_at(vars(-year, -pdo.oni_group), ~ mean(., na.rm = TRUE)) 
+
+#*no average for positive years based on available data
+#*data shared has diff values for years with data, but don't reflect average used in predicted data. 
+
+```
+
+
+```{r calc_pct_susceptible}
+
+df_fish<-read.csv(here::here("data", "spsuCH_subset.csv")) #subsetted data from lWG2AdultGrowth.csv; see size code
+
+df_pred <- df_fish %>% 
+  left_join(select(expanded_averages_df, year, median, pdo.oni_group), by = "year") %>% 
+  mutate(prey = ifelse(length <= median, 1,0))  #prey =1
+
+
+df_pred %>% 
+  group_by(year, site,prey) %>%
+  summarise( mean(length)) #everyone has a length between 1993:2019
+  
+df_pred_summary <- df_pred %>% 
+  group_by(year, site) %>% 
+  summarise(n_susceptible = sum(prey),
+            n_population = n(),
+            pct_susceptible = round((n_susceptible / n_population),2))
+
+#*positive years missing obviously and 2002--what is going on with 2002?
+  
+
+```
+
+```{r p_pct_prey, fig.width=10}
+p<-df_pred %>% 
+  group_by(year, site,prey) %>% 
+  summarise(nobs = n()) %>% 
+ggplot(aes(x=as.factor(year), y=nobs, color =as.factor(prey)))+
+  geom_bar(stat = "identity", position = "fill", width = .8) +
+  facet_wrap(~site, scales = "free")+
+   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust= .5))
+
+p
+
+p + geom_point(aes( y=df_pred_summary$pct_susceptible))+
+  facet_wrap(~site)
+
+
+```
+
+
+```{r}
+df_pred_summary <- df_fish %>% 
+  left_join(select(expanded_averages_df, year, median, pdo.oni_group), by = "year") %>% 
+  mutate(prey = ifelse(length <= median, 1, 0)) %>%  
+  group_by(year, site) %>% 
+  summarise(n_susceptible = sum(prey),
+            n_population = n(),
+            pct_susceptible = ifelse(n_population > 0 & n_susceptible == 0, 
+                                     0, 
+                                     (n_susceptible / n_population)))
+
+df_pred <- df_pred %>%
+  group_by(year, site, prey) %>%
+  summarise(nobs = n())
+
+library(ggplot2)
+
+ggplot(df_pred, aes(x = as.factor(year), y = nobs, fill = as.factor(prey))) +
+  geom_bar(stat = "identity", position = "fill", width = .8) +
+  geom_text(data = df_pred_summary[df_pred_summary$pct_susceptible > 0, ],
+            aes(label =pct_susceptible, y = pct_susceptible),
+            position = position_fill(vjust = 0.5)) +
+  facet_wrap(~site, scales = "free") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+  theme_light()
+
+```
+
 
 # Survival
