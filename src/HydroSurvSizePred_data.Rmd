@@ -97,8 +97,9 @@ df.fish %>%
   summarise(n())
   
 ```
+
 ```{r predator_thresholds}
-predator_thresholds<-data_frame(species = c("N. Pikeminnow", "Pacific Hake"),
+predator_thresholds<-tibble(species = c("N. Pikeminnow", "Pacific Hake"),
                                 median = c(166.165, 110),
                                 min = c(76.665, 70),
                                 max = c(255.165, 200))
@@ -195,20 +196,39 @@ fct_size_histogram( "by_half_month")
 
 
 # Predation
-```{r import_pred_data}
 
-df.pred.hake.raw<-read_csv(here::here("data/Hake Year Data", "Hake Data (All).csv")) 
+
+## Pacific Hake
+**methods from shiny app:** 
+
+IMPLENTING EMMETT 2008 – PACIFIC HAKE DATA
+Emmett 2008, page 5, boxplot image was inserted into https://plotdigitizer.com/app and the five-summary data was extracted from 1998-2004, 2017, and 2019 and saved into “Pacific Hake Data.csv”.
+
+Data was then converted from predator length to prey length utilizing y~0.350838x-33.3482 to apply the linear relationship to determine prey size susceptible to predation (Muir et al 2006, page 1526, for Pacific Hake). [Pacific Hake Conversion.R]
+
+The five-summary data was then graphed utilizing lines of dark green where low & high were dotted lines, q1 & q3 were dashed lines, and median was a solid line. 
+
+&
+
+CLIMATE YEARS
+While we were able to get data for predators in a few years to determine their thresholds, a large majority of years did not have such collected data. Thus, using Oceanic Niño Index (ONI) and Pacific Decadal Oscillation (PDO), we categorized both dataset values into negative, neutral, and positive. If a year had positive values from both datasets, the year would be labeled as “positive,” vice versa for “negative.” If the year had differing values, it would be labeled as “neutral.”
+
+From there, we took the threshold data that was available to us and separated them based on their year’s climate and then averaged them to determine a “default” threshold for each of the three climates.
+
+```{r import_hake_pred_data}
+
+df.pred.hake.raw<-read_csv(here::here("data/predation_risk/hake/year_data", "1998-2004 Hake Data.csv"))  
+
+#adjust 2002 to be correct
+df.pred.hake.raw[5,1] <- 2002
+df.pred.hake.raw %>% 
+  mutate(year = as.factor(year))
 # data from 1998 to 2004 pulled data from Emmett et al 2011; 2017 and 2019 pulled from ? 
 #multiple files for 2017 & 2019, if using 2017/2019 values in `Hake Data (All).csv` then SL for 2017/2019 are negative, but final summary data reports values for 2017, 2015, 2019 and none are negative. What was done there? 
 
-#has incorrect # for 2001/2002?
-df.pred.hake.raw[6,1] <- 2002
 
 
 ```
-
-## Pacific Hake
-
 ```{r convert_predlengths_to_preylengths}
 
 
@@ -221,10 +241,10 @@ hake_convert_y <- function(x) {
 # Apply the equation to each non-year column of the dataset
 hake_results_df <- df.pred.hake.raw %>%
   mutate_at(vars(-year), ~ hake_convert_y(.)) %>% 
-  mutate(year = as.numeric(year))
+  mutate(year = as.factor(year))
 
 # Save the SL results to a CSV file
-write.csv(hake_results_df, file = here::here("data/Hake Year Data", "hake_predtoprey_SL_results.csv"), row.names = FALSE)
+write.csv(hake_results_df, file = here::here("data/predation_risk/hake/", "hake_predtoprey_SL_results.csv"), row.names = FALSE)
 
 
 
@@ -266,28 +286,26 @@ adding climate data (Negative, Neutral, Positive) to predict all years threshold
 #add automated version scrubbing from website
 
 #pull files for now
-df_climate<-read.csv(file = here::here("data/Climate Data", "ONI_PDO Data.csv"))
+df_climate<-read.csv(file = here::here("data/predation_risk", "ONI_PDO Data.csv"))
 
 
 #assign climate designation per year based on pdo/oni classification
 df_climate <-df_climate %>% 
   filter(between(year, 1993, 2022)) %>% 
     mutate(
-    pdo.oni_group = ifelse(pdo_group == oni_group, pdo_group, "neutral"),
-    year = as.numeric(year)
-  )
+    pdo.oni_group = ifelse(pdo_group == oni_group, pdo_group, "neutral")
+  ) %>% 
+  mutate(year= as.factor(year))
 ```
 
 
 ```{r combine_climate&hake_predict_data}
+
+
 #expand known data to add estimation based on climate designation
 expanded_df <- hake_results_df %>%
-  full_join(df_climate %>% select(year, pdo.oni_group), by = "year") %>% 
-  arrange(year)
- 
-     #something weird with 2002--fix later
-    expanded_df<-expanded_df[-11,]
-    expanded_df[10,7] <- "neutral"
+  full_join(df_climate %>% select(year, pdo.oni_group), by = "year") 
+
     
 #average thresholds based on climate designation   
 expanded_averages_df<-expanded_df %>% 
@@ -295,32 +313,42 @@ expanded_averages_df<-expanded_df %>%
    mutate_at(vars(-year, -pdo.oni_group), ~ mean(., na.rm = TRUE)) 
 
 #*no average for positive years based on available data
-#*data shared has diff values for years with data, but don't reflect average used in predicted data. 
+#*data shared has diff values for years with data, but don't reflect average used in predicted data. __REDO METHOD AND DATA SOURCING
 
 ```
 
 
 ```{r calc_pct_susceptible}
 
-df_fish<-read.csv(here::here("data", "spsuCH_subset.csv")) #subsetted data from lWG2AdultGrowth.csv; see size code
+df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv")) #subsetted data from lWG2AdultGrowth.csv; see size code
+pike.median<-166.165
 
-df_pred <- df_fish %>% 
+df_pred_hake <- df_fish %>% 
+  mutate( year = as.factor(year)) %>% 
   left_join(select(expanded_averages_df, year, median, pdo.oni_group), by = "year") %>% 
-  mutate(prey = ifelse(length <= median, 1,0))  #prey =1
+  mutate(prey = ifelse(length <= median, 1,0))
 
-
-df_pred %>% 
-  group_by(year, site,prey) %>%
-  summarise( mean(length)) #everyone has a length between 1993:2019
-  
-df_pred_summary <- df_pred %>% 
+df_pred_summary_hake <- df_pred_hake %>% 
   group_by(year, site) %>% 
   summarise(n_susceptible = sum(prey),
             n_population = n(),
-            pct_susceptible = round((n_susceptible / n_population),2))
+            pct_susceptible = round((n_susceptible / n_population),4)) %>% 
+  mutate(predator = "Pacific Hake",
+         year = as.character(year))
 
-#*positive years missing obviously and 2002--what is going on with 2002?
-  
+df_pred_pike<- df_fish %>% 
+  mutate(prey = ifelse(length <= pike.median, 1,0))  #all are going tobe prey since the df_fish is filtered from 55 to 165!
+
+df_pred_summary_pike <- df_pred_pike %>% 
+  group_by(year, site) %>% 
+  summarise(n_susceptible = sum(prey),
+            n_population = n(),
+            pct_susceptible = round((n_susceptible / n_population),4)) %>% 
+  mutate(predator = "N. Pikeminnow", 
+         year = as.character(year))  
+
+df_pred_summary<-rbind(df_pred_summary_hake, df_pred_summary_pike)
+#*positive years missing obviously--update when method selected
 
 ```
 
@@ -368,7 +396,169 @@ ggplot(df_pred, aes(x = as.factor(year), y = nobs, fill = as.factor(prey))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
   theme_light()
 
+
+    plotly::ggplotly(  df_pred_summary %>%
+        ggplot(aes(x = year, y = pct_susceptible, fill = site))+
+        geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = .8) +
+        scale_fill_manual(values = c("steelblue4", "#b47747") )+
+        labs( y= "Percent susceptible to predation", 
+              x = "Smolt release year",
+              fill = "Location") +
+          scale_y_continuous(labels = scales::percent_format())+
+        theme_light() +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+    )
+
 ```
 
 
+
+## Nothern Pike Minnow
+
+**methods from shiny app:**
+
+GETTING NORTHERN PIKE THRESHOLD
+For the Northern Pikeminnow length distributions (ranges & medians), we utilized Figure 10 in Winther et al. 2021 and Winther et al. 2019, Table D-1 in Storch et al. 2014, and Figure 10 in Porter et al. 2013.
+
+For each figure, we obtained the min and max values as well as the median range. From there, we took the median of the median range and used that as the median threshold.
+
+Median of each bin, weight by the percentage observed, sum across bins => average.
+
+Since all the graphs had relatively the same shape and similar averages, the thresholds are set static across all years to min = 76.665, median = 166.165, and max = 255.165 after using the Muir equation for N. Pikeminnows.
+
+*for now just use data and then rethink overall method and source from each report listed
+
+```{r calc_pct_susceptible_pike}
+df_pred <- df_fish %>% 
+  mutate( year = as.factor(year)) %>% 
+  left_join(select(expanded_averages_df, year, median, pdo.oni_group), by = "year") %>% 
+  mutate(prey = ifelse(length <= median, 1,0))  #prey =1
+
+
+df_pred %>% 
+  group_by(year, site,prey) %>%
+  summarise( mean(length)) #everyone has a length between 1993:2019
+  
+df_pred_summary <- df_pred %>% 
+  group_by(year, site) %>% 
+  summarise(n_susceptible = sum(prey),
+            n_population = n(),
+            pct_susceptible = round((n_susceptible / n_population),4))
+```
+
 # Survival
+
+shiny app shared code
+```{r shared_surv_code}
+# Description: Reads all the migration-survival files and prepare data to be 
+# graphed. 
+
+# LGR_BON MIGRATION #
+#####################
+lgr_bon_r <- read.csv(here::here("data/survival/results", "LGR_BON_R_surv.csv"), header = FALSE, sep = ",")
+
+# Transpose columns 
+lgr_bon_r <- as.data.frame(t(lgr_bon_r))
+# Rename columns 
+lgr_bon_r <- lgr_bon_r %>% rename("year" = "V1", "min" = "V2", "median" = "V3", "max" = "V4")
+# Convert from decimal to percentage
+lgr_bon_r[, 2:4] <- lapply(lgr_bon_r[, 2:4], as.numeric)
+
+lgr_bon_r[2:4] = lapply(lgr_bon_r[2:4], "*", 100)
+
+# Create transfer dataframe where survival is assumed 100%
+lgr_bon_t <- lgr_bon_r %>% mutate_at(vars(min, median, max), list(~100))
+lgr_bon_t[, 2:4] <- lapply(lgr_bon_t[, 2:4], as.numeric)
+
+# Add 'which dataframe' label
+lgr_bon_r <- lgr_bon_r %>% add_column(migration = "In-river")
+lgr_bon_t <- lgr_bon_t %>% add_column(migration = "Transported")
+
+# Merge into LGR_BON DF
+lgr_bon_df <- rbind(lgr_bon_r,lgr_bon_t) 
+
+lgr_bon_df<-lgr_bon_df %>% 
+  mutate(reach = "LGR_BON")
+
+# BON_BOA MIGRATION #
+#####################
+bon_boa_r <- read.csv(here::here("data/survival/results", "BON_BOA_R_surv.csv"), header = FALSE, sep = ",")
+bon_boa_t <- read.csv(here::here("data/survival/results", "BON_BOA_T_surv.csv"), header = FALSE, sep = ",")
+# Transpose columns 
+bon_boa_r <- as.data.frame(t(bon_boa_r))
+bon_boa_t <- as.data.frame(t(bon_boa_t))
+# Rename columns 
+bon_boa_r <- bon_boa_r %>% rename("year" = "V1", "min" = "V2", "median" = "V3", "max" = "V4")
+bon_boa_t <- bon_boa_t %>% rename("year" = "V1", "min" = "V2", "median" = "V3", "max" = "V4")
+# Convert from decimal to percentage
+bon_boa_r[, 2:4] <- lapply(bon_boa_r[, 2:4], as.numeric)
+bon_boa_t[, 2:4] <- lapply(bon_boa_t[, 2:4], as.numeric)
+bon_boa_r[2:4] = lapply(bon_boa_r[2:4], "*", 100)
+bon_boa_t[2:4] = lapply(bon_boa_t[2:4], "*", 100)
+# Add 'which dataframe' label
+bon_boa_r <- bon_boa_r %>% add_column(migration = "In-river")
+bon_boa_t <- bon_boa_t %>% add_column(migration = "Transported")
+
+# Merge into LGR_BON DF
+bon_boa_df <- rbind(bon_boa_r,bon_boa_t)
+
+
+bon_boa_df<-bon_boa_df %>% 
+  mutate(reach = "BON_BOA")
+
+# LGR_BOA MIGRATION #
+#####################
+lgr_boa_r <- read.csv(here::here("data/survival/results", "LGR_BOA_R_surv.csv"), header = FALSE, sep = ",")
+lgr_boa_t <- read.csv(here::here("data/survival/results", "LGR_BOA_T_surv.csv"), header = FALSE, sep = ",")
+# Transpose columns 
+lgr_boa_r <- as.data.frame(t(lgr_boa_r))
+lgr_boa_t <- as.data.frame(t(lgr_boa_t))
+# Rename columns 
+lgr_boa_r <- lgr_boa_r %>% rename("year" = "V1", "min" = "V2", "median" = "V3", "max" = "V4")
+lgr_boa_t <- lgr_boa_t %>% rename("year" = "V1", "min" = "V2", "median" = "V3", "max" = "V4")
+# Convert from decimal to percentage
+lgr_boa_r[, 2:4] <- lapply(lgr_boa_r[, 2:4], as.numeric)
+lgr_boa_t[, 2:4] <- lapply(lgr_boa_t[, 2:4], as.numeric)
+lgr_boa_r[2:4] = lapply(lgr_boa_r[2:4], "*", 100)
+lgr_boa_t[2:4] = lapply(lgr_boa_t[2:4], "*", 100)
+# Add 'which dataframe' label
+lgr_boa_r <- lgr_boa_r %>% add_column(migration = "In-river")
+lgr_boa_t <- lgr_boa_t %>% add_column(migration = "Transported")
+
+# Merge into LGR_BON DF
+lgr_boa_df <- rbind(lgr_boa_r,lgr_boa_t)
+
+lgr_boa_df<-lgr_boa_df %>% 
+  mutate(reach = "LGR_BOA")
+
+# DATAFRAME MERGING #
+#####################
+# Merge all migration dataframes 
+#survival_df <- rbind(lgr_bon_r,lgr_bon_t,bon_boa_r,bon_boa_t,lgr_boa_r,lgr_boa_t)
+
+survival_df <- rbind(lgr_bon_df,bon_boa_df,lgr_boa_df)
+
+
+# Jittering (what is this doing?)
+lgr_bon_df$year_adj <- ifelse(lgr_bon_df$migration == "ROR", as.numeric(lgr_bon_df$year) - 0.1, as.numeric(lgr_bon_df$year) + 0.1)
+bon_boa_df$year_adj <- ifelse(bon_boa_df$migration == "ROR", as.numeric(bon_boa_df$year) - 0.1, as.numeric(bon_boa_df$year) + 0.1)
+lgr_boa_df$year_adj <- ifelse(lgr_boa_df$migration == "ROR", as.numeric(lgr_boa_df$year) - 0.1, as.numeric(lgr_boa_df$year) + 0.1)
+
+
+survival_df$year<- round(as.numeric(survival_df$year))
+
+write.csv(survival_df,here::here("data/survival", "cjs_reach_survival.csv"))
+```
+
+```{r surv_data_visualizations}
+
+
+ggplot(survival_df)+
+  geom_point(aes(x= year, y= median, color = migration)) +
+  geom_line( aes(x=year, y=median,  color = migration)) + 
+  geom_point(data = df_pred_summary, aes(x=as.numeric(year), y=pct_susceptible, fill = predator), shape = 21)+
+  facet_wrap(~reach, ncol = 1, scale = "free")
+
+as.integer(as.numeric(df_pred$year))
+```
+

@@ -26,7 +26,7 @@ data.test <- expand.grid(
     predator = rep(c("PH", "NH"), length.out = 1224),
     date = as.Date(paste(year,doy), format = "%Y %j"))
 
-df<-read.csv(here::here("data", "spsuCH_subset.csv"))
+df<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv"))
 
 
 app_ui <- function(request) {

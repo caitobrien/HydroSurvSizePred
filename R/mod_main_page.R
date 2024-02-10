@@ -79,7 +79,7 @@ mod_main_page_server <- function(id){
         pickerInput(
           inputId = ns("select_year"),
           label = "Select Year",
-          choices = unique(data$year),
+          choices = unique(data.test$year),
           selected = 2000,
           options = list(`actions-box` = TRUE),
           multiple = TRUE
@@ -91,9 +91,9 @@ mod_main_page_server <- function(id){
 
     filtered_data <- reactive({
       if (input$year_display == "All Years") {
-        data
+        data.test
       } else if (input$year_display == "Year" && !is.null(input$select_year)) {
-         data %>%
+         data.test %>%
           filter(year == input$select_year)
           group_by(year) %>%
           summarize_all(list(mean = mean))
@@ -126,25 +126,25 @@ mod_main_page_server <- function(id){
         threshold_predator2 <- thresholds$threshold_predator2
 
         # Create a histogram
-        plot <- ggplot(data, aes(x = prey_size)) +
+        plot <- ggplot(data.test, aes(x = prey_size)) +
           geom_histogram(binwidth = 5, fill = "grey", color = "black") +
           labs(title = "Histogram with Predator Size Thresholds") +
           theme_minimal()
 
         # Highlight bars below each predator size threshold
-        if (!is.null(threshold_predator1) && any(data$prey_size < threshold_predator1)) {
+        if (!is.null(threshold_predator1) && any(data.test$prey_size < threshold_predator1)) {
           plot <- plot +
-            geom_histogram(data = subset(data, prey_size < threshold_predator1), binwidth = 5, fill = "sienna3", color = "black", alpha=.3) +
-            geom_text(data = subset(data, prey_size < threshold_predator1),
+            geom_histogram(data = subset(data.test, prey_size < threshold_predator1), binwidth = 5, fill = "sienna3", color = "black", alpha=.3) +
+            geom_text(data = subset(data.test, prey_size < threshold_predator1),
                       aes(x = threshold_predator1 - 10, y = 10, label = paste0(round(sum(prey_size < threshold_predator1) / nrow(data) * 100, 2), "%")),
                       color = "sienna3", size = 4)
         }
 
-        if (!is.null(threshold_predator2) && any(data$prey_size < threshold_predator2)) {
+        if (!is.null(threshold_predator2) && any(data.test$prey_size < threshold_predator2)) {
           plot <- plot +
-            geom_histogram(data = subset(data, prey_size < threshold_predator2), binwidth = 5, fill = "sienna", color = "black", alpha = .3) +
-            geom_text(data = subset(data, prey_size < threshold_predator2),
-                      aes(x = threshold_predator2 - 10, y = 10, label = paste0(round(sum(prey_size < threshold_predator2) / nrow(data) * 100, 2), "%")),
+            geom_histogram(data = subset(data.test, prey_size < threshold_predator2), binwidth = 5, fill = "sienna", color = "black", alpha = .3) +
+            geom_text(data = subset(data.test, prey_size < threshold_predator2),
+                      aes(x = threshold_predator2 - 10, y = 10, label = paste0(round(sum(prey_size < threshold_predator2) / nrow(data.test) * 100, 2), "%")),
                       color = "sienna", size = 4)
         }
 
@@ -157,14 +157,14 @@ mod_main_page_server <- function(id){
     })
 
     output$percentage_below_threshold <- renderText({
-      total_count <- nrow(data)
+      total_count <- nrow(data.test)
       count_below_threshold <- 0
 
       if (!is.null(thresholds$threshold_predator1)) {
-        count_below_threshold <- count_below_threshold + sum(data$prey_size < thresholds$threshold_predator1)
+        count_below_threshold <- count_below_threshold + sum(data.test$prey_size < thresholds$threshold_predator1)
       }
       if (!is.null(thresholds$threshold_predator2)) {
-        count_below_threshold <- count_below_threshold + sum(data$prey_size < thresholds$threshold_predator2)
+        count_below_threshold <- count_below_threshold + sum(data.test$prey_size < thresholds$threshold_predator2)
       }
 
       percentage_below <- (count_below_threshold / total_count) * 100
@@ -172,10 +172,10 @@ mod_main_page_server <- function(id){
     })
 
     output$percentage_below_per_predator <- renderText({
-      count_below_threshold_pred1 <- ifelse(!is.null(thresholds$threshold_predator1), sum(data$prey_size < thresholds$threshold_predator1), 0)
-      count_below_threshold_pred2 <- ifelse(!is.null(thresholds$threshold_predator2), sum(data$prey_size < thresholds$threshold_predator2), 0)
+      count_below_threshold_pred1 <- ifelse(!is.null(thresholds$threshold_predator1), sum(data.test$prey_size < thresholds$threshold_predator1), 0)
+      count_below_threshold_pred2 <- ifelse(!is.null(thresholds$threshold_predator2), sum(data.test$prey_size < thresholds$threshold_predator2), 0)
 
-      total_count <- nrow(data)
+      total_count <- nrow(data.test)
       percentage_below_pred1 <- (count_below_threshold_pred1 / total_count) * 100
       percentage_below_pred2 <- (count_below_threshold_pred2 / total_count) * 100
 
