@@ -72,8 +72,8 @@ mod_subpage4_summary_ui <- function(id){
             inputId = ns("select_year"),
             label = "Year released",
             choices = unique(df_fish$year),
-            selected = unique(df_fish$year),
-            multiple = FALSE
+            selected = 2000,
+            multiple = TRUE
             )
         )
       ),
@@ -128,8 +128,30 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
 
 
     output$summary_plot<- renderPlot({
-      fct_summary_plot(data_size = df_size_filtered(), data_pred_threshold = df_pred_threshold_filtered(), data_pred_risk = df_pred_risk_filtered(), data_surv = df_surv_filtered(), year = years_selected() )
-    })
+      #fct_summary_plot(data_size = df_size_filtered(), data_pred_threshold = df_pred_threshold_filtered(), data_pred_risk = df_pred_risk_filtered(), data_surv = df_surv_filtered(), year = years_selected() )
+      # Create an empty list to store plots
+      plots_list <- list()
+
+      # Loop through selected years and create plots
+      for (year in input$select_year) {
+        plots_list[[as.character(year)]] <- fct_summary_plot(
+          data_size = df_size_filtered(),
+          data_pred_threshold = df_pred_threshold_filtered(),
+          data_pred_risk = df_pred_risk_filtered(),
+          data_surv = df_surv_filtered(),
+          year = year
+        )
+      }
+
+      # Arrange plots side by side using patchwork
+      if (length(plots_list) > 0) {
+        top_legends <- wrap_plots(plots_list, ncol = 1)
+        print(top_legends)
+      } else {
+        # Handle case when no years are selected
+        plot(NULL, xlim = c(0, 1), ylim = c(0, 1), main = "No data selected")
+      }
+      })
 
   })
 }
