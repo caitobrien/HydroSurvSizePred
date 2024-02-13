@@ -69,130 +69,19 @@ readr::write_csv(df, here::here("data", "spsuCH_subset.csv"))
 ```
 
 
-```{r explore_fish_data, echo=TRUE}
-#view data
-df.fish %>% 
-  group_by(t_rear_type) %>% 
-  summarise(n())
-
-df.fish %>% 
-  group_by(t_run) %>% 
-  summarise(n())
-
-df.fish %>% 
-  group_by(pass_type_T_R) %>% 
-  summarise(n())
-
-df.fish %>% 
-  group_by(t_rear_type, t_run, pass_type_T_R) %>% 
-  summarise(n())
-
-
-hist(df.fish$lwg_length)
-hist(df.fish$doy)
-hist(df.fish$year)
-
-df.fish %>% 
-  group_by(site, year) %>% 
-  summarise(n())
-  
-```
-
 ```{r predator_thresholds}
 predator_thresholds<-tibble(species = c("N. Pikeminnow", "Pacific Hake"),
                                 median = c(166.165, 110),
                                 min = c(76.665, 70),
                                 max = c(255.165, 200))
-```
 
-```{r p_size_histogram, fig.height=8, fig.width=10}
-
-
-df %>% 
-  ggplot(aes(x = length))+
-  geom_histogram(aes(color = site, fill = site), alpha= .25) + 
-  labs( x = "Smolt fork length (mm)", 
-        y = "Number of smolt", 
-        color = "Detection site",
-        fill = "Detection site")+
-  scale_fill_manual (values = c("steelblue4", "#b47747"), 
-                     labels = c("BON", "LWG"))+
-    scale_color_manual(values = c("steelblue4", "#b47747"),
-                       labels = c("BON", "LWG"))+
-  theme_light() +
-  facet_wrap(~year, scales = "free_y") + 
-  theme(strip.text = element_text(color = "black"))
+pred_long<-predator_thresholds %>% 
+  pivot_longer(cols = c(median, min, max), values_to = "threshold", names_to = "type") %>% 
+  mutate(type = ifelse(type != "median","min/max", "median"),
+         predator = species)
 
 ```
 
-```{r fct_facet_size_histogram}
-
-fct_size_histogram<-function(facet_by, graph){
-  
-  #Determine the geom function based on the selected graph type
-  geom_function <- switch(graph,
-                          "Histogram" = geom_histogram(aes(fill = site), binwidth = 5),
-                          "Density" = geom_density(aes(fill = site)))
-  
-  
-p<- df %>% 
-  ggplot(aes(x = length))+
-  geom_function + 
-  labs( x = "Smolt fork length (mm)", 
-        y = "Number of smolt", 
-        color = "Detection site",
-        fill = "Detection site")+
-  scale_fill_manual (values = c("steelblue4", "#b47747"), 
-                     labels = c("BON", "LWG"))+
-  theme_light() +
-  facet_wrap(as.formula(paste0("~", facet_by)), scales = "free_y") + 
-  theme(strip.text = element_text(color = "black"))
-  
-  return(p)
-}
-
-fct_size_histogram(facet_by =  "by_half_month", graph = "Histogram")
-
-```
-
-```{r p_size_density, fig.height=8, fig.width=10}
-df %>% 
-  ggplot(aes(x = length))+
-  geom_density(aes( fill = site)) + 
-  labs( x = "Smolt fork length (mm)", 
-        y = "Number of smolt", 
-       
-        fill = "Detection site")+
-  scale_fill_manual (values = c("steelblue4", "#b47747"), 
-                     labels = c("BON", "LWG"))+
-  facet_wrap(~year, scales = "free_y") + 
-  theme(strip.text = element_text(color = "black"))
-```
-
-
-
-```{r fct_facet_size_density}
-fct_size_histogram<-function(facet_by){
-p<- df.fish_facet %>% 
-  ggplot(aes(x = length))+
-  geom_density(aes( fill = site), alpha= .25) + 
-  labs( x = "Smolt fork length (mm)", 
-        y = "Number of smolt", 
-        fill = "Detection site")+
-  scale_fill_manual (values = c("steelblue4", "#b47747"), 
-                     labels = c("BON", "LWG"))+
-    scale_color_manual(values = c("steelblue4", "#b47747"),
-                       labels = c("BON", "LWG"))+
-  theme_light() +
-  facet_wrap(as.formula(paste0("~", facet_by)), scales = "free_y") + 
-  theme(strip.text = element_text(color = "black"))
-  
-  return(p)
-}
-
-fct_size_histogram( "by_half_month")
-
-```
 
 
 # Predation
@@ -280,7 +169,7 @@ ggplot(filter(hake_results_df, year <2015), aes(x = year))+
 ```
 
 adding climate data (Negative, Neutral, Positive) to predict all years thresholds
-*no positive year data to get median
+*no positive year data to get median ---rethink method all together
 
 ```{r import_climate_data}
 #add automated version scrubbing from website
@@ -317,106 +206,9 @@ expanded_averages_df<-expanded_df %>%
 
 ```
 
+To add pike threshold data: 
 
-```{r calc_pct_susceptible}
-
-df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv")) #subsetted data from lWG2AdultGrowth.csv; see size code
-pike.median<-166.165
-
-df_pred_hake <- df_fish %>% 
-  mutate( year = as.factor(year)) %>% 
-  left_join(select(expanded_averages_df, year, median, pdo.oni_group), by = "year") %>% 
-  mutate(prey = ifelse(length <= median, 1,0))
-
-df_pred_summary_hake <- df_pred_hake %>% 
-  group_by(year, site) %>% 
-  summarise(n_susceptible = sum(prey),
-            n_population = n(),
-            pct_susceptible = round((n_susceptible / n_population),4)) %>% 
-  mutate(predator = "Pacific Hake",
-         year = as.character(year))
-
-df_pred_pike<- df_fish %>% 
-  mutate(prey = ifelse(length <= pike.median, 1,0))  #all are going tobe prey since the df_fish is filtered from 55 to 165!
-
-df_pred_summary_pike <- df_pred_pike %>% 
-  group_by(year, site) %>% 
-  summarise(n_susceptible = sum(prey),
-            n_population = n(),
-            pct_susceptible = round((n_susceptible / n_population),4)) %>% 
-  mutate(predator = "N. Pikeminnow", 
-         year = as.character(year))  
-
-df_pred_summary<-rbind(df_pred_summary_hake, df_pred_summary_pike)
-#*positive years missing obviously--update when method selected
-
-```
-
-```{r p_pct_prey, fig.width=10}
-p<-df_pred %>% 
-  group_by(year, site,prey) %>% 
-  summarise(nobs = n()) %>% 
-ggplot(aes(x=as.factor(year), y=nobs, color =as.factor(prey)))+
-  geom_bar(stat = "identity", position = "fill", width = .8) +
-  facet_wrap(~site, scales = "free")+
-   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust= .5))
-
-p
-
-p + geom_point(aes( y=df_pred_summary$pct_susceptible))+
-  facet_wrap(~site)
-
-
-```
-
-
-```{r}
-df_pred_summary <- df_fish %>% 
-  left_join(select(expanded_averages_df, year, median, pdo.oni_group), by = "year") %>% 
-  mutate(prey = ifelse(length <= median, 1, 0)) %>%  
-  group_by(year, site) %>% 
-  summarise(n_susceptible = sum(prey),
-            n_population = n(),
-            pct_susceptible = ifelse(n_population > 0 & n_susceptible == 0, 
-                                     0, 
-                                     (n_susceptible / n_population)))
-
-df_pred <- df_pred %>%
-  group_by(year, site, prey) %>%
-  summarise(nobs = n())
-
-library(ggplot2)
-
-ggplot(df_pred, aes(x = as.factor(year), y = nobs, fill = as.factor(prey))) +
-  geom_bar(stat = "identity", position = "fill", width = .8) +
-  geom_text(data = df_pred_summary[df_pred_summary$pct_susceptible > 0, ],
-            aes(label =pct_susceptible, y = pct_susceptible),
-            position = position_fill(vjust = 0.5)) +
-  facet_wrap(~site, scales = "free") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-  theme_light()
-
-
-    plotly::ggplotly(  df_pred_summary %>%
-        ggplot(aes(x = year, y = pct_susceptible, fill = site))+
-        geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = .8) +
-        scale_fill_manual(values = c("steelblue4", "#b47747") )+
-        labs( y= "Percent susceptible to predation", 
-              x = "Smolt release year",
-              fill = "Location") +
-          scale_y_continuous(labels = scales::percent_format())+
-        theme_light() +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-    )
-
-```
-
-
-
-## Nothern Pike Minnow
-
-**methods from shiny app:**
-
+**methods from shiny app:** 
 GETTING NORTHERN PIKE THRESHOLD
 For the Northern Pikeminnow length distributions (ranges & medians), we utilized Figure 10 in Winther et al. 2021 and Winther et al. 2019, Table D-1 in Storch et al. 2014, and Figure 10 in Porter et al. 2013.
 
@@ -428,27 +220,53 @@ Since all the graphs had relatively the same shape and similar averages, the thr
 
 *for now just use data and then rethink overall method and source from each report listed
 
-```{r calc_pct_susceptible_pike}
-df_pred <- df_fish %>% 
+
+```{r calc_pct_susceptible}
+
+df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv")) #subsetted data from lWG2AdultGrowth.csv; see size code
+#see past methods description--setting pike set median -- rethink method
+pike.median<-166.165
+
+#combine climate and hake df; get count under pred threshold
+df_pred_hake <- df_fish %>% 
   mutate( year = as.factor(year)) %>% 
   left_join(select(expanded_averages_df, year, median, pdo.oni_group), by = "year") %>% 
-  mutate(prey = ifelse(length <= median, 1,0))  #prey =1
+  mutate(prey = ifelse(length <= median, 1,0))
 
-
-df_pred %>% 
-  group_by(year, site,prey) %>%
-  summarise( mean(length)) #everyone has a length between 1993:2019
-  
-df_pred_summary <- df_pred %>% 
+#calc pct suceptible hake
+df_pred_summary_hake <- df_pred_hake %>% 
   group_by(year, site) %>% 
   summarise(n_susceptible = sum(prey),
             n_population = n(),
-            pct_susceptible = round((n_susceptible / n_population),4))
+            pct_susceptible = round((n_susceptible / n_population),4)) %>% 
+  mutate(predator = "Pacific Hake",
+         year = as.character(year))
+
+#designate count under pike pred threshold
+df_pred_pike<- df_fish %>% 
+  mutate(prey = ifelse(length <= pike.median, 1,0))  #all are going tobe prey since the df_fish is filtered from 55 to 165!
+
+#calc pct suceptible pike
+df_pred_summary_pike <- df_pred_pike %>% 
+  group_by(year, site) %>% 
+  summarise(n_susceptible = sum(prey),
+            n_population = n(),
+            pct_susceptible = round((n_susceptible / n_population),4)) %>% 
+  mutate(predator = "N. Pikeminnow", 
+         year = as.character(year))  
+
+#combine summaries
+df_pred_summary<-rbind(df_pred_summary_hake, df_pred_summary_pike)
+#*positive years missing obviously--update when method selected
+
+write_csv(df_pred_summary, here::here("data/predation_risk", "predtopreySL_to_pctsusceptible.csv"))
+
 ```
 
 # Survival
 
-shiny app shared code
+**methods from shiny app:** 
+
 ```{r shared_surv_code}
 # Description: Reads all the migration-survival files and prepare data to be 
 # graphed. 
@@ -477,6 +295,7 @@ lgr_bon_t <- lgr_bon_t %>% add_column(migration = "Transported")
 # Merge into LGR_BON DF
 lgr_bon_df <- rbind(lgr_bon_r,lgr_bon_t) 
 
+#Add column designating reach specific for combined df
 lgr_bon_df<-lgr_bon_df %>% 
   mutate(reach = "LGR_BON")
 
@@ -502,7 +321,7 @@ bon_boa_t <- bon_boa_t %>% add_column(migration = "Transported")
 # Merge into LGR_BON DF
 bon_boa_df <- rbind(bon_boa_r,bon_boa_t)
 
-
+#Add column designating reach specific for combined df
 bon_boa_df<-bon_boa_df %>% 
   mutate(reach = "BON_BOA")
 
@@ -527,7 +346,7 @@ lgr_boa_t <- lgr_boa_t %>% add_column(migration = "Transported")
 
 # Merge into LGR_BON DF
 lgr_boa_df <- rbind(lgr_boa_r,lgr_boa_t)
-
+#Add column designating reach specific for combined df
 lgr_boa_df<-lgr_boa_df %>% 
   mutate(reach = "LGR_BOA")
 
@@ -552,13 +371,89 @@ write.csv(survival_df,here::here("data/survival", "cjs_reach_survival.csv"))
 
 ```{r surv_data_visualizations}
 
+df_survival<-read.csv(here::here("data/survival", "cjs_reach_survival.csv"))
 
-ggplot(survival_df)+
+ggplot(df_survival)+
   geom_point(aes(x= year, y= median, color = migration)) +
   geom_line( aes(x=year, y=median,  color = migration)) + 
   geom_point(data = df_pred_summary, aes(x=as.numeric(year), y=pct_susceptible, fill = predator), shape = 21)+
   facet_wrap(~reach, ncol = 1, scale = "free")
 
 as.integer(as.numeric(df_pred$year))
+```
+
+# Summary
+
+```{r}
+predator_thresholds 
+
+
+  #create base plot
+   size_plot <- df_fish %>%
+     filter(year == 2013) %>% 
+    ggplot(aes(x = length)) +
+    geom_histogram(aes(fill = site), binwidth = 5) +
+    geom_vline(data = filter(pred_long,  type == "median"), aes(color = species, xintercept = threshold, linetype = type )) +
+    scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
+                      labels = c("LWG", "BON")) +
+    scale_color_manual(values = c("N. Pikeminnow" = "darkgreen", "Pacific Hake" = "goldenrod"),
+                 labels = c("N. Pikeminnow", "Pacific Hake")) +
+    labs(
+      x = "Fork length (mm)",
+      y= "Number of smolt",
+      fill = "Location",
+      color = "Predator median",
+      linetype = NULL) +
+     guides(linetype = FALSE, 
+            color = FALSE) + 
+     facet_wrap(~year)
+    
+   
+   
+   pred_plot <- df_pred_summary %>% 
+     filter(year == 2013) %>% 
+     ggplot(aes(x=pct_susceptible, y=site, fill = predator)) +
+     geom_bar(stat= "identity", position = position_dodge()) +
+    scale_fill_manual (values = c("N. Pikeminnow" = "darkgreen", "Pacific Hake" = "goldenrod"),
+                 labels = c("N. Pikeminnow", "Pacific Hake")) +
+     labs(x = "Predation risk (%)",
+          y = "Location") + 
+     facet_wrap(~year)
+   
+   
+   surv_plot<- df_survival %>%
+     filter(year == 2013, 
+            reach == "LGR_BOA") %>% 
+    ggplot(aes(x = as.factor(year), y = median/100))+
+    geom_pointrange(aes(color= migration,y=median/100, ymin=min/100, ymax=max/100),
+                    shape =21, 
+                    size = 1, 
+                    lwd =.25, 
+                    position = position_jitter())+
+    labs( y= "Estimated survival (%)",
+          x = "Smolt release year",
+         # shape = "Predation risk (%)",
+          color = "Passage type") +
+    scale_y_continuous(labels = scales::percent_format())+
+    theme_light() +
+     facet_wrap(~year)
+    theme(panel.spacing.y = unit(1, "cm"))
+   
+
+library(patchwork)   
+  
+   # Arrange plots with patchwork and add annotation and legend
+top_legends <- (
+  ((size_plot / pred_plot) | surv_plot ) + 
+  plot_annotation(title = "YEAR--reactive") +
+  plot_layout(guides = "collect") &
+  theme(legend.position='top')
+)
+
+# Display the plot
+top_legends
+
+
+
 ```
 
