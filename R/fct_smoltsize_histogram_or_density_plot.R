@@ -30,7 +30,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
       fill = "Detection site"
     ) +
      scale_fill_manual (values = c("LWG" = "steelblue4", "BON" = "#b47747"),
-                        labels = c("LWG", "BON"))+
+                        labels = c( "steelblue4" = "LWG", "#b47747" = "BON"))+
     theme_light() +
     # facet_wrap(~get(facet_by), ncol = 4, scales = "free") +
     theme(strip.text = element_text(color = "black"))

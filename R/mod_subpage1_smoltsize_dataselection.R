@@ -18,8 +18,8 @@ mod_subpage1_smoltsize_dataselection_ui <- function(id) {
         selectInput(
           inputId = ns("select_loc"),
           label = "Locations",
-          choices = unique(df$site),
-          selected = unique(df$site),
+          choices = unique(df_fish$site),
+          selected = unique(df_fish$site),
           multiple = TRUE
           )
         ),
@@ -42,9 +42,9 @@ mod_subpage1_smoltsize_dataselection_ui <- function(id) {
           sliderInput(
             inputId = ns("year_slider"),
             label = "Year(s) released",
-            min = min(df$year),
-            max = max(df$year),
-            value = c(min(df$year), max(df$year)),
+            min = min(df_fish$year),
+            max = max(df_fish$year),
+            value = c(min(df_fish$year), max(df_fish$year)),
             step = 1,
             sep = "")
       )
@@ -80,7 +80,7 @@ mod_subpage1_smoltsize_dataselection_server <- function(id) {
     # reactive for year and location selection to filter data used in plots
     filtered_data<- reactive({
 
-      df %>%
+      df_fish %>%
         dplyr::filter(
           site %in% c(input$select_loc),
           year %in% c(input$year_slider[1]:input$year_slider[2])

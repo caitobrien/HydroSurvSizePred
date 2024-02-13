@@ -8,6 +8,7 @@
 fct_predrisk_bar_plot <- function(data){
 
   p<- data %>%
+    mutate(year = as.factor(year)) %>%
     ggplot(aes(x = year, y = pct_susceptible, fill = site))+
     geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = .8) +
     scale_fill_manual(values = c("steelblue4", "#b47747") )+
