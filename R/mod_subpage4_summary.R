@@ -95,45 +95,40 @@ mod_subpage4_summary_ui <- function(id){
 #' subpage4_summary Server Functions
 #'
 #' @noRd
-mod_subpage4_summary_server <- function(id, data_size, data_pred){
+mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data_pred_risk, data_surv){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    sites_selected <- reactive({input$select_site})
-    preds_selected<- reactive({input$select_predator})
-    passage_selected<- reactive({input$select_passtype})
-    years_selected<- reactive({input$select_year})
+     years_selected<- reactive({input$select_year})
 
     df_size_filtered<-reactive({
       data_size %>%
-        filter(site %in% c(input$select_site))
+        filter(site %in% c(input$select_site),
+               year %in% c(input$select_year))
 
     })
 
-    df_pred_filtered<-reactive({
-      data_pred%>%
-        filter(predator %in% c(input$select_predator))
+    df_pred_threshold_filtered<-reactive({
+      data_pred_threshold%>%
+        filter(species %in% c(input$select_predator))
+    })
+
+    df_pred_risk_filtered<-reactive({
+      data_pred_risk%>%
+        filter(predator %in% c(input$select_predator),
+               site %in% c(input$select_site),
+               year %in% c(input$select_year))
+    })
+
+    df_surv_filtered<-reactive({
+      data_surv%>%
+        filter(migration %in% c(input$select_passtype),
+               year %in% c(input$select_year))
     })
 
 
     output$summary_plot<- renderPlot({
-      df_size_filtered() %>%
-        ggplot(aes(x = length)) +
-        geom_histogram(aes(fill = site), binwidth = 5) +
-        geom_vline(data = filter(df_pred_filtered(),  type == "median"), aes(color = predator, xintercept = threshold, linetype = type )) +
-        scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
-                          labels = c("LWG", "BON")) +
-        scale_color_manual(values = c("N. Pikeminnow" = "darkgreen", "Pacific Hake" = "goldenrod"),
-                           labels = c("darkgreen" = "N. Pikeminnow", "goldenrod" = "Pacific Hake")) +
-        labs(
-          x = "Fork length (mm)",
-          y= "Number of smolt",
-          fill = "Location",
-          color = "Predator median",
-          linetype = NULL) +
-        guides(linetype = FALSE,
-               color = FALSE) +
-        facet_wrap(~year)
+      fct_summary_plot(data_size = df_size_filtered(), data_pred_threshold = df_pred_threshold_filtered(), data_pred_risk = df_pred_risk_filtered(), data_surv = df_surv_filtered(), year = years_selected() )
     })
 
   })

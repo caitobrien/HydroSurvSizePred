@@ -28,7 +28,7 @@ app_server <- function(input, output, session) {
 
   mod_subpage3_survival_server("subpage3_survival_1", data = df_survival)
 
-  mod_subpage4_summary_server("subpage4_summary_1", data_size = df_fish, data_pred = pred_long)
+  mod_subpage4_summary_server("subpage4_summary_1", data_size = df_fish, data_pred_threshold = pred_long, data_pred_risk = df_pred_summary, data_surv = df_survival)
 
   mod_background_page_server("background_page_1")
 
