@@ -27,6 +27,8 @@ mod_subpage2_predrisk_ui <- function(id){
         height = "850px",
         title = "Predation risk all years",
         status = "info",
+        collapsible = TRUE,
+        collapsed = FALSE,
         # select locations
             selectInput(
               inputId = ns("select_pred"),
@@ -41,29 +43,14 @@ mod_subpage2_predrisk_ui <- function(id){
 
       shinydashboard::box(width = 12,
                           title = "Add interactive size distribution and % predation risk",
-                          status = "info"),
+                          status = "info",
+                          collapsible = TRUE,
+                          collapsed = TRUE),
       shinydashboard::box(width = 12,
                           title = "Add numbers and distribution (interactive map?) and simple figure?",
-                          status = "info")
-
-    # shinydashboard::box(
-    #   width = 12,
-    #   title = "Predation Risk by year",
-    #   status = "info",
-    #
-    #     # select locations
-    #     selectInput(
-    #       inputId = ns("select_loc"),
-    #       label = "Locations",
-    #       choices = unique(df_pred_summary$site),
-    #       selected = unique(df_pred_summary$site),
-    #       # width = "200px",
-    #       multiple = T
-    #     ),
-    #
-    #   plotOutput(outputId = ns("predrisk_plot_byyear"))
-    #
-    # )
+                          status = "info",
+                          collapsible = TRUE,
+                          collapsed = TRUE)
     )
   )
 }
@@ -71,13 +58,13 @@ mod_subpage2_predrisk_ui <- function(id){
 #' mod_subpage2_predrisk Server Functions
 #'
 #' @noRd
-mod_subpage2_predrisk_server <- function(id){
+mod_subpage2_predrisk_server <- function(id, data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     # Filter data based on slider input
     filtered_data <- reactive({
-      df_pred_summary %>%
+     data %>%
         filter(predator %in% c(input$select_pred))
     })
 
@@ -86,23 +73,6 @@ mod_subpage2_predrisk_server <- function(id){
       fct_predrisk_bar_plot(data = filtered_data())
     })
 
-
-    #render plot by year
-    # output$predrisk_plot_byyear<- renderPlot(
-    #
-    #   plotly::ggplotly( filtered_data()  %>%
-    #                       ggplot(aes(x = year, y = pct_susceptible, fill = site))+
-    #                       geom_bar(stat = "identity", position = position_dodge(preserve = "single"), width = .8) +
-    #                       scale_fill_manual(values = c("steelblue4", "#b47747") )+
-    #                       labs( y= "Percent susceptible to predation",
-    #                             x = "Smolt release year",
-    #                             fill = "Location") +
-    #                       scale_y_continuous(labels = scales::percent_format())+
-    #                       facet_wrap(~year, ncol = 4) +
-    #                       theme_light() +
-    #                       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-    #   )
-    # )
   })
 }
 
