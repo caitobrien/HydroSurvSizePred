@@ -24,7 +24,11 @@ app_server <- function(input, output, session) {
   mod_subpage1_smoltsize_server("subpage1_smoltsize_1", data = filtered_data(), predators_selected = predators_selected(), plot_height = plot_height())
   })
 
-  mod_subpage2_predrisk_server("mod_subpage2_predrisk_1")
+  mod_subpage2_predrisk_server("mod_subpage2_predrisk_1", data = df_pred_summary)
+
+  mod_subpage3_survival_server("subpage3_survival_1", data = df_survival)
+
+  mod_subpage4_summary_server("subpage4_summary_1", df_fish = df_fish, df_pred = pred_long)
 
   mod_background_page_server("background_page_1")
 

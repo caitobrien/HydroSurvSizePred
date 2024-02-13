@@ -11,6 +11,8 @@ library(shinyWidgets)
 library(shinydashboard)
 library(tidyverse)
 library(ggh4x)
+library(patchwork)
+
 # Generating sample data
 set.seed(123)
 data.test <- expand.grid(
@@ -27,6 +29,10 @@ data.test <- expand.grid(
     date = as.Date(paste(year,doy), format = "%Y %j"))
 
 df<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv"))
+
+df_pred_summary<-read.csv(here::here("data/predation_risk", "predtopreySL_to_pctsusceptible.csv"))
+
+df_survival<-read.csv(here::here("data/survival", "cjs_reach_survival.csv"))
 
 
 app_ui <- function(request) {
@@ -47,7 +53,8 @@ app_ui <- function(request) {
                    menuSubItem("Size, Predation, and Survival", tabName = "main_page", icon = icon("diagram-project")),
                    menuSubItem("Smolt Size", tabName = "subpage1", icon = icon("ruler-horizontal")),
                    menuSubItem("Predation Risk", tabName = "subpage2", icon = icon("arrow-trend-down")),
-                   menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up"))
+                   menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up")),
+                   menuSubItem("Size, Predation, and Survival", tabName = "subpage4", icon = icon("diagram-project"))
           ),
           menuItem("Background", tabName = "background_page", icon = icon("info"))
         )
@@ -62,7 +69,10 @@ app_ui <- function(request) {
                   mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
           tabItem("subpage2", h2("Predation Risk Content"),
                    mod_subpage2_predrisk_ui("mod_subpage2_predrisk_1")),
-          tabItem("subpage3", h2("Estimated Survival Content")),
+          tabItem("subpage3",
+                  mod_subpage3_survival_ui("subpage3_survival_1")),
+          tabItem("subpage4",
+                  mod_subpage4_summary_ui("subpage4_summary_1")),
           tabItem("background_page",
                   mod_background_page_ui("background_page_1"))
         )
