@@ -29,7 +29,7 @@ mod_subpage4_summary_ui <- function(id){
         collapsible = TRUE,
         collapsed = FALSE,
 
-        # select reach
+        # select site
         column(
           width = 3,
           selectInput(
@@ -68,14 +68,13 @@ mod_subpage4_summary_ui <- function(id){
         #select year
         column(
           width = 3,
-          sliderInput(
-            inputId = ns("year_slider"),
-            label = "Year(s) released",
-            min = min(df_survival$year),
-            max = max(df_survival$year),
-            value = min(df_survival$year),
-            step = 1,
-            sep = "")
+          selectInput(
+            inputId = ns("select_year"),
+            label = "Year released",
+            choices = unique(df_fish$year),
+            selected = unique(df_fish$year),
+            multiple = FALSE
+            )
         )
       ),
 
@@ -96,26 +95,36 @@ mod_subpage4_summary_ui <- function(id){
 #' subpage4_summary Server Functions
 #'
 #' @noRd
-mod_subpage4_summary_server <- function(id, df_fish, df_pred){
+mod_subpage4_summary_server <- function(id, data_size, data_pred){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     sites_selected <- reactive({input$select_site})
     preds_selected<- reactive({input$select_predator})
-    years_selected<- reactive({input$year_slider})
+    passage_selected<- reactive({input$select_passtype})
+    years_selected<- reactive({input$select_year})
 
-    print(input$select_site)
+    df_size_filtered<-reactive({
+      data_size %>%
+        filter(site %in% c(input$select_site))
 
-    output$survival_plot<- renderPlot({
-       df_fish %>%
-        filter(site %in% c(input$select_site)) %>%
+    })
+
+    df_pred_filtered<-reactive({
+      data_pred%>%
+        filter(predator %in% c(input$select_predator))
+    })
+
+
+    output$summary_plot<- renderPlot({
+      df_size_filtered() %>%
         ggplot(aes(x = length)) +
         geom_histogram(aes(fill = site), binwidth = 5) +
-        geom_vline(data = filter(df_pred,  type == "median"), aes(color = predator, xintercept = threshold, linetype = type )) +
+        geom_vline(data = filter(df_pred_filtered(),  type == "median"), aes(color = predator, xintercept = threshold, linetype = type )) +
         scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
                           labels = c("LWG", "BON")) +
         scale_color_manual(values = c("N. Pikeminnow" = "darkgreen", "Pacific Hake" = "goldenrod"),
-                           labels = c("N. Pikeminnow", "Pacific Hake")) +
+                           labels = c("darkgreen" = "N. Pikeminnow", "goldenrod" = "Pacific Hake")) +
         labs(
           x = "Fork length (mm)",
           y= "Number of smolt",
@@ -126,6 +135,7 @@ mod_subpage4_summary_server <- function(id, df_fish, df_pred){
                color = FALSE) +
         facet_wrap(~year)
     })
+
   })
 }
 

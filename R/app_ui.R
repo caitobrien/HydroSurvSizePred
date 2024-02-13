@@ -28,7 +28,7 @@ data.test <- expand.grid(
     predator = rep(c("PH", "NH"), length.out = 1224),
     date = as.Date(paste(year,doy), format = "%Y %j"))
 
-df<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv"))
+df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv"))
 
 df_pred_summary<-read.csv(here::here("data/predation_risk", "predtopreySL_to_pctsusceptible.csv"))
 
@@ -72,7 +72,7 @@ app_ui <- function(request) {
           tabItem("subpage3",
                   mod_subpage3_survival_ui("subpage3_survival_1")),
           tabItem("subpage4",
-                  mod_subpage4_summary_ui("subpage4_summary_1")),
+                   mod_subpage4_summary_ui("subpage4_summary_1")),
           tabItem("background_page",
                   mod_background_page_ui("background_page_1"))
         )
