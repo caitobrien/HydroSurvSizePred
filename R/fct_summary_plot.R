@@ -27,8 +27,6 @@ size_plot <- data_size %>%
          color = FALSE) +
   theme_light()
 
-#size_plot<-plotly::ggplotly(size_plot)
-
 
 #predation risk plot
 pred_plot <- data_pred_risk%>%
@@ -42,12 +40,7 @@ pred_plot <- data_pred_risk%>%
   scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible) * 1.1)) + # Adjust y-axis limits
   theme_light()
 
-#pred_plot<-plotly::ggplotly(pred_plot)
-
-
-
 #survival plot
-
 surv_plot<- data_surv %>%
   filter(reach == "LGR_BOA") %>%
   ggplot(aes(x = as.factor(year), y = median/100))+
@@ -63,13 +56,9 @@ surv_plot<- data_surv %>%
   scale_y_continuous(labels = scales::percent_format())+
   theme_light()
 
-#surv_plot<-plotly::ggplotly(surv_plot)
-
-
-
 
 # Modify the ggplot calls to conditionally hide the legend
-  size_plot <- size_plot + theme(legend.position = if (show_legend) 'top' else 'none') + ggtitle(paste0("Year of interest: ", year))
+  size_plot <- size_plot + theme(legend.position = if (show_legend) 'top' else 'none') + ggtitle(paste0("Year of interest: ", year)) #only add title to leftmost plot to left justify title; move as needed
   pred_plot <- pred_plot + theme(legend.position = if (show_legend) 'top' else 'none')
   surv_plot <- surv_plot + theme(legend.position = if (show_legend) 'top' else 'none')
 
