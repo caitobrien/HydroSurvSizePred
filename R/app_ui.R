@@ -28,6 +28,17 @@ data.test <- expand.grid(
     predator = rep(c("PH", "NH"), length.out = 1224),
     date = as.Date(paste(year,doy), format = "%Y %j"))
 
+predator_thresholds<-tibble(species = c("N. Pikeminnow", "Pacific Hake"),
+                            median = c(166.165, 110),
+                            min = c(76.665, 70),
+                            max = c(255.165, 200))
+
+pred_long<-predator_thresholds %>%
+  pivot_longer(cols = c(median, min, max), values_to = "threshold", names_to = "type") %>%
+  mutate(type = ifelse(type != "median","min/max", "median"),
+         predator = species)
+
+
 df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv"))
 
 df_pred_summary<-read.csv(here::here("data/predation_risk", "predtopreySL_to_pctsusceptible.csv"))

@@ -68,13 +68,14 @@ mod_subpage4_summary_ui <- function(id){
         #select year
         column(
           width = 3,
-          selectInput(
+          pickerInput(
             inputId = ns("select_year"),
-            label = "Year released",
+            label = "Select Year(s)",
             choices = unique(df_fish$year),
             selected = 2000,
+            options = list(`actions-box` = TRUE),
             multiple = TRUE
-            )
+          )
         )
       ),
 
@@ -101,18 +102,30 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
 
      years_selected<- reactive({input$select_year})
 
+     #set reactive for plot heights
+     plot_height<- reactive({
+         req(years_selected())
+       nyears <- length(years_selected())
+
+       if (nyears > 3) {
+         plot_height<- 500 + (nyears-3)*150
+       }else plot_height <-500
+     })
+
+     #set reactive for size plot
     df_size_filtered<-reactive({
       data_size %>%
         filter(site %in% c(input$select_site),
                year %in% c(input$select_year))
-
     })
 
+  #set reactive for theshold lines on size plot
     df_pred_threshold_filtered<-reactive({
       data_pred_threshold%>%
         filter(species %in% c(input$select_predator))
     })
 
+  #set reactive for pred risk plot
     df_pred_risk_filtered<-reactive({
       data_pred_risk%>%
         filter(predator %in% c(input$select_predator),
@@ -120,26 +133,34 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
                year %in% c(input$select_year))
     })
 
+  # set reactive for pct_survival
     df_surv_filtered<-reactive({
       data_surv%>%
         filter(migration %in% c(input$select_passtype),
                year %in% c(input$select_year))
     })
 
-
     output$summary_plot<- renderPlot({
-      #fct_summary_plot(data_size = df_size_filtered(), data_pred_threshold = df_pred_threshold_filtered(), data_pred_risk = df_pred_risk_filtered(), data_surv = df_surv_filtered(), year = years_selected() )
+
       # Create an empty list to store plots
       plots_list <- list()
 
       # Loop through selected years and create plots
-      for (year in input$select_year) {
-        plots_list[[as.character(year)]] <- fct_summary_plot(
-          data_size = df_size_filtered(),
+      for (i in seq_along(input$select_year)) {
+        year_selected <- input$select_year[i]
+
+        # Filter data for the current year
+        data_size_year <- df_size_filtered() %>% filter(year == year_selected)
+        data_pred_risk_year <- df_pred_risk_filtered() %>% filter(year == year_selected)
+        data_surv_year <- df_surv_filtered() %>% filter(year == year_selected)
+
+        plots_list[[as.character(year_selected)]] <- fct_summary_plot(
+          data_size = data_size_year,
           data_pred_threshold = df_pred_threshold_filtered(),
-          data_pred_risk = df_pred_risk_filtered(),
-          data_surv = df_surv_filtered(),
-          year = year
+          data_pred_risk = data_pred_risk_year,
+          data_surv = data_surv_year,
+          year = year_selected,
+          show_legend = i == 1  # Show legend only for the first plot
         )
       }
 
@@ -151,6 +172,8 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
         # Handle case when no years are selected
         plot(NULL, xlim = c(0, 1), ylim = c(0, 1), main = "No data selected")
       }
+      } , height = function() {
+        plot_height()
       })
 
   })
