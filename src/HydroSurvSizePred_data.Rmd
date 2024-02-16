@@ -62,11 +62,45 @@ df<-df.fish.raw %>%
 
 readr::write_csv(df, here::here("data", "spsuCH_subset.csv"))
 
-
-
-
-
 ```
+
+```{r fish_sums}
+
+summary_data <- df_fish %>%
+  group_by(year, by_month, by_half_month) %>%
+  summarise(total_smolt_BON = sum(site == "BON", na.rm = TRUE),
+            total_smolt_LWG = sum(site == "LWG", na.rm = TRUE)) %>%
+  ungroup()
+
+max(df_fish$length)
+
+
+   # Create a summary data frame that contains the total number of smolt per site per year, month, or half-month
+   summary_data <- df_fish %>%
+     group_by(year, site) %>%
+     summarise(nsite = sum(n(), na.rm = TRUE)) %>%
+     ungroup()
+
+   # Spread the counts into separate columns for each site
+   summary_data <- tidyr::spread(summary_data, key = "site", value = "nsite")
+
+   # Replace NA values with 0
+   summary_data[is.na(summary_data)] <- 0
+
+   # Gather the counts back into a single column with the corresponding site names
+   summary_data <- tidyr::gather(summary_data, key = "site", value = "nsite", c("BON", "LWG"))
+
+   # Create the label
+   summary_data <- summary_data %>%
+     mutate(label = paste(site, "n= ", nsite))
+
+   # Combine the labels for "BON" and "LWG"
+   summary_data <- summary_data %>%
+     group_by(year) %>%
+     summarise(label = paste(label, collapse = "\n")) %>%
+     ungroup()
+```
+
 
 
 ```{r predator_thresholds}

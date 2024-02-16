@@ -1,12 +1,7 @@
-#'fct_smoltsize_histogram_or_density_plot.R
+#' smoltsize_histogram
 #'
 #' @description A function used to produce the smolt size histogram
-#' @param data The data frame to plot.
-#' @param facet_by The variables to facet by: year, by_month, by_half_month.
-#' @param predators_selected  predators thresholds to plot.
-#' @param graph graph choice: histo or density.
-#' @param locations_selected site to plot .
-#' @return The return value is a histo or density plot of size distribution
+#' @return The return value is a histogram allows for variable facets (by_year, by_month, by_half_month)
 #'
 #'
 #' @noRd
@@ -107,12 +102,75 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
                         "by_month" = c("year", "by_month"),
                         "by_half_month" = c("year", "by_half_month"))
 
-   # use the utils function to create summary data in proper format for adding geom_text()
-   summary_data <- create_summary_data(data, group_vars)
+   # Convert the grouping variables to symbols
+   group_vars <- rlang::syms(group_vars)
+
+   # Create a summary data frame that contains the total number of smolt per site per year, month, or half-month
+   summary_data <- data %>%
+     group_by(!!!group_vars, site) %>%
+     summarise(nsite = sum(n(), na.rm = TRUE)) %>%
+     ungroup()
+
+   # Fill in the missing combinations of your grouping variables and site with 0
+   summary_data <- tidyr::complete(summary_data, !!!group_vars, site, fill = list(nsite = 0))
+
+   # Spread the counts into separate columns for each site
+   summary_data <- tidyr::spread(summary_data, key = "site", value = "nsite")
+
+   # Ensure both "BON" and "LWG" columns exist
+   summary_data$BON <- ifelse(is.na(summary_data$BON), 0, summary_data$BON)
+   summary_data$LWG <- ifelse(is.na(summary_data$LWG), 0, summary_data$LWG)
+
+   # Gather the counts back into a single column with the corresponding site names
+   summary_data <- tidyr::gather(summary_data, key = "site", value = "nsite", c("BON", "LWG"))
+
+   # Create the label
+   summary_data <- summary_data %>%
+     mutate(label = paste(site, "n= ", nsite))
+
+   # Combine the labels for "BON" and "LWG"
+   summary_data <- summary_data %>%
+     group_by(!!!group_vars) %>%
+     summarise(label = paste(label, collapse = "\n")) %>%
+     ungroup()
 
    # Add geom_text to the plot to show the total number of smolt per site
    size_plot <- size_plot +
-     geom_text(data = summary_data, aes(x = 170, y = Inf, label = label), vjust = 1.5, hjust = 0, size = 3)
+     geom_text(data = summary_data, aes(x = 170, y = Inf, label = label), vjust = 2, hjust = 0, size = 4)
+
+   # # Create a summary data frame that contains the total number of smolt per site per year, month, or half-month
+   # summary_data <- data %>%
+   #   group_by(!!!group_vars, site) %>%
+   #   summarise(nsite = sum(n(), na.rm = TRUE)) %>%
+   #   ungroup()
+   #
+   # # Spread the counts into separate columns for each site
+   # summary_data <- tidyr::spread(summary_data, key = "site", value = "nsite")
+   #
+   # # Check if the "BON" and "LWG" columns exist in summary_data
+   # if (!"BON" %in% names(summary_data)) {
+   #   summary_data$BON <- 0
+   # }
+   # if (!"LWG" %in% names(summary_data)) {
+   #   summary_data$LWG <- 0
+   # }
+   #
+   # # Gather the counts back into a single column with the corresponding site names
+   # summary_data <- tidyr::gather(summary_data, key = "site", value = "nsite", c("BON", "LWG"))
+   #
+   # # Create the label
+   # summary_data <- summary_data %>%
+   #   mutate(label = paste(site, "n= ", nsite))
+   #
+   # # Combine the labels for "BON" and "LWG"
+   # summary_data <- summary_data %>%
+   #   group_by(!!!group_vars) %>%
+   #   summarise(label = paste(label, collapse = "\n")) %>%
+   #   ungroup()
+   #
+   # # Add geom_text to the plot to show the total number of smolt per site
+   # size_plot <- size_plot +
+   #   geom_text(data = summary_data, aes(x = 170, y = Inf, label = label), vjust = 2, hjust = 0, size = 4)
 
 
   # minor aesthetic adjustments
