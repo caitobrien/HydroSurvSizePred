@@ -11,7 +11,7 @@
 #'
 #' @noRd
 
-fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_selected, graph, locations_selected){
+fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_selected, years_selected, graph, locations_selected){
 
   #Determine the geom function based on the user selected graph type
   geom_function <- switch(graph,
@@ -32,6 +32,15 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
     ) %>%
     arrange(site)  # Sort the data by site only
 
+  ## Create the title and subtitle based on facet_by and years_selected() using helper functin condense_years()
+  rct.title <- switch(facet_by,
+                  "year" = "Annual size distribution",
+                  "by_month" = "Monthly size distribution",
+                  "by_half_month" = "Half-monthly size distribution")
+  rct.subtitle <- paste("Years:", condense_years(years_selected))
+
+
+
   #create base plot
    size_plot <- data %>%
     ggplot(aes(x = length)) +
@@ -41,7 +50,8 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
       y = "Number of smolt",
       fill = "Detection site",
       alpha = NULL,
-      title = paste0("Annual size distribution")
+      title = rct.title,
+      subtitle = rct.subtitle
     ) +
      scale_fill_manual (values = c( "BON" = "#b47747", "LWG" = "steelblue4"),
                         labels = c(  "#b47747" = "BON", "steelblue4" = "LWG"))+
@@ -126,6 +136,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
    # Print summary_data
    print(summary_data)
 
+   print(years_selected)
   return(size_plot)
 
 }

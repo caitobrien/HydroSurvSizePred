@@ -23,6 +23,8 @@ size_plot <- data_size %>%
                     labels = c("steelblue4"= "LWG", "#b47747"= "BON")) +
   scale_color_manual(values = c("N. Pikeminnow" = "darkgreen", "Pacific Hake" = "goldenrod"),
                      labels = c("darkgreen"="N. Pikeminnow", "goldenrod" ="Pacific Hake")) +
+  scale_linetype_manual(values = "solid",
+                        labels = "Median") +
   labs(
     x = "Fork length (mm)",
     y= "Number of smolt",
@@ -30,7 +32,7 @@ size_plot <- data_size %>%
     color = "Predator",
     linetype = "Predator threshold") +
   guides(fill = guide_legend(order = 1),
-         color = guide_legend(order = 2),
+         color = guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
          linetype = guide_legend(order = 3)) +
   theme_light()
 
@@ -41,12 +43,11 @@ pred_plot <- data_pred_risk%>%
   geom_bar(stat= "identity", position = position_dodge()) +
   scale_fill_manual (values = c( "Pacific Hake" = "goldenrod", "N. Pikeminnow" = "darkgreen"),
                      labels = c( "goldenrod" ="Pacific Hake", "darkgreen"="N. Pikeminnow")) +
-  scale_linetype_manual(labels = c( "Median", "Median")) +
   labs(y = "Predation risk (%)",
        x = "Location") +
   geom_text(aes(label = paste0(round(pct_susceptible*100, 1), "%")), vjust = -0.5, position = position_dodge(0.9)) +
   scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible) * 1.1)) + # Adjust y-axis limits
-  guides(fill = guide_legend(order = 1)) +
+  guides(fill = "none") +
   theme_light()
 
 #survival plot
