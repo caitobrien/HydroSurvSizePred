@@ -19,9 +19,10 @@ app_server <- function(input, output, session) {
     filtered_data <- smoltsize_dataselect_reactives$filtered_data
     predators_selected <- smoltsize_dataselect_reactives$predators_selected
     plot_height <- smoltsize_dataselect_reactives$plot_height
+    locations_selected<-smoltsize_dataselect_reactives$locations_selected
 
 
-  mod_subpage1_smoltsize_server("subpage1_smoltsize_1", data = filtered_data(), predators_selected = predators_selected(), plot_height = plot_height())
+  mod_subpage1_smoltsize_server("subpage1_smoltsize_1", data = filtered_data(), predators_selected = predators_selected(), plot_height = plot_height(), locations_selected = locations_selected())
   })
 
   mod_subpage2_predrisk_server("mod_subpage2_predrisk_1", data = df_pred_summary)

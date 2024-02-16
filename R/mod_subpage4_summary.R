@@ -71,7 +71,7 @@ mod_subpage4_summary_ui <- function(id){
           pickerInput(
             inputId = ns("select_year"),
             label = "Select Year(s)",
-            choices = unique(df_fish$year),
+            choices = sort(unique(df_fish$year)),
             selected = 2000,
             options = list(`actions-box` = TRUE),
             multiple = TRUE

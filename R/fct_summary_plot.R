@@ -8,7 +8,13 @@
 
 fct_summary_plot <- function(data_size, data_pred_threshold, data_pred_risk, data_surv, year, show_legend = TRUE){
 
+
+
 #size distribution plot
+  #sort year
+  data_size <- data_size %>%
+    mutate( year = factor(year, levels = sort(unique(year))))
+
 size_plot <- data_size %>%
   ggplot(aes(x = length)) +
   geom_histogram(aes(fill = site), binwidth = 5, alpha = .5) +

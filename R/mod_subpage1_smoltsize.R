@@ -18,7 +18,7 @@ mod_subpage1_smoltsize_ui <- function(id) {
         title = "Smolt Size Distributions",
         HTML("insert text here that summrizes smolt size distribution and how to explore/connect to next section"),
         collapsible = TRUE,
-        collapsed = TRUE
+        collapsed = FALSE
       ),
 
       shinydashboard::box(
@@ -81,22 +81,22 @@ mod_subpage1_smoltsize_ui <- function(id) {
 #' subpage1_smoltsize Server Functions
 #'
 #' @noRd
-mod_subpage1_smoltsize_server <- function(id, data, predators_selected, plot_height){
+mod_subpage1_smoltsize_server <- function(id, data, predators_selected, plot_height, locations_selected){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     output$annual_plot <- renderPlot({
-      fct_smoltsize_histogram_or_density_plot(data = data(), facet_by = "year", predators_selected = predators_selected(), graph = input$select_graph)
+      fct_smoltsize_histogram_or_density_plot(data = data(), facet_by = "year", predators_selected = predators_selected(), graph = input$select_graph, locations_selected = locations_selected())
     },
     height = plot_height())
 
     output$monthly_plot <- renderPlot({
-      fct_smoltsize_histogram_or_density_plot(data = data(), facet_by = "by_month", predators_selected = predators_selected(), graph = input$select_graph)
+      fct_smoltsize_histogram_or_density_plot(data = data(), facet_by = "by_month", predators_selected = predators_selected(), graph = input$select_graph, locations_selected = locations_selected())
     },
     height = plot_height())
 
     output$half_monthly_plot <- renderPlot({
-      fct_smoltsize_histogram_or_density_plot(data = data(), facet_by = "by_half_month", predators_selected = predators_selected(),graph = input$select_graph)
+      fct_smoltsize_histogram_or_density_plot(data = data(), facet_by = "by_half_month", predators_selected = predators_selected(),graph = input$select_graph, locations_selected = locations_selected())
     },
     height = plot_height())
 

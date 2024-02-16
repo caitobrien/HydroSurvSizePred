@@ -17,7 +17,7 @@ mod_subpage1_smoltsize_dataselection_ui <- function(id) {
         width = 3,
         selectInput(
           inputId = ns("select_loc"),
-          label = "Locations",
+          label = "Location(s)",
           choices = unique(df_fish$site),
           selected = unique(df_fish$site),
           multiple = TRUE
@@ -29,7 +29,7 @@ mod_subpage1_smoltsize_dataselection_ui <- function(id) {
         width = 3,
         selectInput(
           inputId = ns("select_predator"),
-          label = "Predator thresholds",
+          label = "Predator threshold(s)",
           choices = unique(predator_thresholds$species),
           selected = unique(predator_thresholds$species),
           multiple = TRUE
@@ -39,14 +39,14 @@ mod_subpage1_smoltsize_dataselection_ui <- function(id) {
       #select year
       column(
         width = 3,
-          sliderInput(
-            inputId = ns("year_slider"),
-            label = "Year(s) released",
-            min = min(df_fish$year),
-            max = max(df_fish$year),
-            value = c(min(df_fish$year), max(df_fish$year)),
-            step = 1,
-            sep = "")
+        pickerInput(
+          inputId = ns("select_year"),
+          label = "Select year(s)",
+          choices = sort(unique(df_fish$year)),
+          selected = 2000,
+          options = list(`actions-box` = TRUE),
+          multiple = TRUE
+        )
       )
     )
   )
@@ -59,22 +59,25 @@ mod_subpage1_smoltsize_dataselection_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    #reactive for predator thresholds
+    #reactive for predator thresholds, years, and site
     predators_selected <- reactive({
       input$select_predator
     })
 
-    # Reactive for plot height
+    years_selected<- reactive({input$select_year})
+
+    locations_selected <- reactive({
+      input$select_loc
+    })
+
+    #set reactive for plot heights
     plot_height<- reactive({
-      req(input$year_slider)
-      # Extract the range of years selected
-      nyears <- input$year_slider[2] - input$year_slider[1] + 1
+      req(years_selected())
+      nyears <- length(years_selected())
 
       if (nyears > 3) {
-        return(500 + (nyears-3)*120)
-      }else {
-        return(500)
-        }
+        plot_height<- 400 + (nyears-3)*120
+      }else plot_height <-400
     })
 
     # reactive for year and location selection to filter data used in plots
@@ -83,7 +86,7 @@ mod_subpage1_smoltsize_dataselection_server <- function(id) {
       df_fish %>%
         dplyr::filter(
           site %in% c(input$select_loc),
-          year %in% c(input$year_slider[1]:input$year_slider[2])
+          year %in% c(input$select_year)#year %in% c(input$year_slider[1]:input$year_slider[2])
           )
     })
 
@@ -91,7 +94,9 @@ mod_subpage1_smoltsize_dataselection_server <- function(id) {
     return(list(
       filtered_data = reactive(filtered_data),
       predators_selected = reactive(predators_selected),
-      plot_height = reactive(plot_height)
+      plot_height = reactive(plot_height),
+      years_selected = reactive(years_selected),
+      locations_selected = reactive(locations_selected)
     ))
   })
 }
