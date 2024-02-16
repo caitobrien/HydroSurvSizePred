@@ -27,10 +27,11 @@ size_plot <- data_size %>%
     x = "Fork length (mm)",
     y= "Number of smolt",
     fill = "Location",
-    color = "Predator median",
-    linetype = NULL) +
-  guides(linetype = FALSE,
-         color = FALSE) +
+    color = "Predator",
+    linetype = "Predator threshold") +
+  guides(fill = guide_legend(order = 1),
+         color = guide_legend(order = 2),
+         linetype = guide_legend(order = 3)) +
   theme_light()
 
 
@@ -40,10 +41,12 @@ pred_plot <- data_pred_risk%>%
   geom_bar(stat= "identity", position = position_dodge()) +
   scale_fill_manual (values = c( "Pacific Hake" = "goldenrod", "N. Pikeminnow" = "darkgreen"),
                      labels = c( "goldenrod" ="Pacific Hake", "darkgreen"="N. Pikeminnow")) +
+  scale_linetype_manual(labels = c( "Median", "Median")) +
   labs(y = "Predation risk (%)",
        x = "Location") +
   geom_text(aes(label = paste0(round(pct_susceptible*100, 1), "%")), vjust = -0.5, position = position_dodge(0.9)) +
   scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible) * 1.1)) + # Adjust y-axis limits
+  guides(fill = guide_legend(order = 1)) +
   theme_light()
 
 #survival plot
@@ -58,8 +61,10 @@ surv_plot<- data_surv %>%
   labs( y= "Estimated survival (%)",
         x = "Smolt release year",
         # shape = "Predation risk (%)",
-        color = "Passage type") +
+        color = "Passage type",
+        linetype = "Median") +
   scale_y_continuous(labels = scales::percent_format())+
+  guides(color = guide_legend(order = 1)) +
   theme_light()
 
 
