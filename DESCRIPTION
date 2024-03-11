@@ -6,6 +6,8 @@ Description: App used to explore sp/su Chinook Salmon smolt length distributions
 License: What license is it under?
 Imports: 
     config (>= 0.3.2),
+    dplyr,
+    ggh4x,
     ggplot2,
     golem (>= 0.4.1),
     patchwork,
