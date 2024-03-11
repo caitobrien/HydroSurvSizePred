@@ -4,16 +4,25 @@
 # HydroSurvSizePred
 
 <!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
+
+<!-- lastcommit: start -->
+
+[![Last
+Commit](https://img.shields.io/github/last-commit/caitobrien/HydroSurvSizePred)](https://github.com/caitobrien/HydroSurvSizePred/commits/main)
+<!-- lastcommit: end -->
 
 The goal of **HydroSurvSizePred** is to explore spring/summer Chinook
 salmon, *Oncorhynchus tshawytscha*, smolt length distributions, predator
 risk from Northern Pikeminnow and Pacific Hake, and survival across
 years and seasons during downstream migration through the Federal
-Columbia River Power System Hydrosystem (FCRPS)
+Columbia River Power System Hydrosystem (FCRPS), Pacific Northwest, USA.
 
-Please note that this Shiny App is dependent on data availability and
-serves as an exploratory tool.
+*Please note that this Shiny App is dependent on data availability and
+serves as an exploratory tool.*
 
 ## Installation
 
@@ -31,17 +40,24 @@ library(HydroSurvSizePred)
 run_app()
 ```
 
-\*Since project is currently in development, please rerun
-`install_github("caitobrien/HydroSurvSizePred")` to see latest commits.
-If no commits since last import, a warning will appear: “Skipping
-install of ‘HydroSurvSizePred’ from a github remote, the SHA1 (fdd71350)
-has not changed since last install. Use `force = TRUE` to force
-installation”
+**HydroSurvSizePred** is currently in development and changes are
+continuously being made. If you have already imported to R studio,
+please rerun `install_github("caitobrien/HydroSurvSizePred")` to see
+latest changes in the developmental version. If no changes have been
+made since last import, a warning will appear:
+`Skipping install of 'HydroSurvSizePred' from a github remote, the SHA1 (fdd71350) has not changed since last install. Use 'force = TRUE' to force installation`
+and you have the latest developmental version imported.
 
 If you are interested in the files that support the development version,
 please see:
-(<https://github.com/caitobrien/HydroSurvSizePred>)\[<https://github.com/caitobrien/HydroSurvSizePred>\]
+[https://github.com/caitobrien/HydroSurvSizePred](%5Bhttps://github.com/caitobrien/HydroSurvSizePred)
 for files necessary to run. The app structure follows a Golem framework
-described in (Engineering Production-Grade Shiny
-Apps)\[<https://engineering-shiny.org/setting-up-for-success.html>\] by
+described in [Engineering Production-Grade Shiny
+Apps](https://engineering-shiny.org/setting-up-for-success.html) by
 Colin Fay, Sébastien Rochette, Vincent Guyader and Cervan Girard.
+
+## Contact
+
+This app is being developed by Caitlin O’Brien, Research Scientist,
+Columbia Basin Research, SAFS, University of Washington. Please reach
+out with questions/concerns via <csobrien@uw.edu>.
