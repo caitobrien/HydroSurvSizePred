@@ -76,7 +76,7 @@ surv_plot<- data_surv %>%
 
   # Arrange plots with patchwork and add annotation
   top_legends <- (
-    (size_plot | pred_plot | surv_plot ) +
+    (size_plot + pred_plot + surv_plot ) +
       patchwork::plot_layout(guides = if (show_legend) "collect" else "keep")
   )
 
