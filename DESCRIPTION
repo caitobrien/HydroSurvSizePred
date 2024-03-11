@@ -12,6 +12,7 @@ Imports:
     golem (>= 0.4.1),
     magrittr,
     patchwork,
+    plotly,
     shiny (>= 1.8.0),
     shinydashboard,
     shinyWidgets,
