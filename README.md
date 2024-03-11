@@ -49,10 +49,11 @@ made since last import, a warning will appear:
 and you have the latest developmental version imported.
 
 If you are interested in the files that support the development version,
-please see:
-[https://github.com/caitobrien/HydroSurvSizePred](%5Bhttps://github.com/caitobrien/HydroSurvSizePred)
-for files necessary to run. The app structure follows a Golem framework
-described in [Engineering Production-Grade Shiny
+please see: <https://github.com/caitobrien/HydroSurvSizePred> for files
+necessary to run.
+
+The app structure follows a Golem framework described in [Engineering
+Production-Grade Shiny
 Apps](https://engineering-shiny.org/setting-up-for-success.html) by
 Colin Fay, Sébastien Rochette, Vincent Guyader and Cervan Girard.
 
