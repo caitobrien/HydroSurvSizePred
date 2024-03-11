@@ -39,7 +39,7 @@ mod_subpage1_smoltsize_dataselection_ui <- function(id) {
       #select year
       column(
         width = 3,
-        pickerInput(
+        shinyWidgets::pickerInput(
           inputId = ns("select_year"),
           label = "Select year(s)",
           choices = sort(unique(df_fish$year)),

@@ -15,13 +15,13 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
 
   #Determine the geom function based on the user selected graph type
   geom_function <- switch(graph,
-                          "Histogram" = geom_histogram(aes(fill = site, alpha = (site == "LWG")), binwidth = 5,  position = "identity"),
-                          "Density" = geom_density(aes(fill = site, alpha = (site == "LWG"))))
+                          "Histogram" = ggplot2::geom_histogram(ggplot2::aes(fill = site, alpha = (site == "LWG")), binwidth = 5,  position = "identity"),
+                          "Density" = ggplot2::geom_density(ggplot2::aes(fill = site, alpha = (site == "LWG"))))
 
   #set levels for month and half-month; arrange by site
   data <- data %>%
-    arrange(year, by_month, day_month) %>%
-    mutate( by_month = factor(by_month,
+    dplyr::arrange(year, by_month, day_month) %>%
+    dplyr::mutate( by_month = factor(by_month,
                               levels = c("March", "April", "May", "June"), ordered = TRUE),
             by_half_month = factor( by_half_month,
                                     levels = c("Late March","Early April", "Late April", "Early May", "Late May", "Early June"),
@@ -30,7 +30,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
             .before = length,
            year = factor(year, levels = sort(unique(year)))
     ) %>%
-    arrange(site)  # Sort the data by site only
+    dplyr::arrange(site)  # Sort the data by site only
 
   ## Create the title and subtitle based on facet_by and years_selected() using helper functin condense_years()
   rct.title <- switch(facet_by,
@@ -43,9 +43,9 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
 
   #create base plot
    size_plot <- data %>%
-    ggplot(aes(x = length)) +
+    ggplot2::ggplot(ggplot2::aes(x = length)) +
     geom_function +
-    labs(
+    ggplot2::labs(
       x = "Smolt fork length (mm)",
       y = "Number of smolt",
       fill = "Detection site",
@@ -53,13 +53,13 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
       title = rct.title,
       subtitle = rct.subtitle
     ) +
-     scale_fill_manual (values = c( "BON" = "#b47747", "LWG" = "steelblue4"),
+     ggplot2::scale_fill_manual (values = c( "BON" = "#b47747", "LWG" = "steelblue4"),
                         labels = c(  "#b47747" = "BON", "steelblue4" = "LWG"))+
-     scale_alpha_manual(values = c("TRUE" = 0.6, "FALSE" = 1)) +
-     guides(alpha = "none")+
-    theme_light() +
+     ggplot2::scale_alpha_manual(values = c("TRUE" = 0.6, "FALSE" = 1)) +
+     ggplot2::guides(alpha = "none")+
+    ggplot2::theme_light() +
     # facet_wrap(~get(facet_by), ncol = 4, scales = "free") +
-    theme(strip.text = element_text(color = "black"),
+    ggplot2::theme(strip.text = ggplot2::element_text(color = "black"),
           legend.position = "top")
 
 
@@ -92,20 +92,20 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
    # Add vertical lines based on selected predators
    if (!is.null(predators_selected)) {
      size_plot <- size_plot +
-       labs( color = "Predator species",
+       ggplot2::labs( color = "Predator species",
              linetype = "Predator threshold") +
-       geom_vline(data = vlines_data[vlines_data$label %in% predators_selected, ],
-                  aes(xintercept = xintercept, color = color, linetype = linetype),
+       ggplot2::geom_vline(data = vlines_data[vlines_data$label %in% predators_selected, ],
+                  ggplot2::aes(xintercept = xintercept, color = color, linetype = linetype),
                   show.legend = TRUE) +
-       scale_color_manual(values = c("darkgreen" = "darkgreen", "goldenrod" = "goldenrod"),
+       ggplot2::scale_color_manual(values = c("darkgreen" = "darkgreen", "goldenrod" = "goldenrod"),
                           labels = c("N. Pikeminnow", "Pacfic hake"),
                           name = "Predator species") +
-       scale_linetype_manual(values = c("solid" = "solid", "dashed" = "dashed"),
+       ggplot2::scale_linetype_manual(values = c("solid" = "solid", "dashed" = "dashed"),
                              labels = c( "Min/Max", "Median"),
                              name = "Predator threshold") +
-       guides(fill = guide_legend(override.aes = list(linetype = 0), order = 1), # remove line from site legend
-              color = guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
-              linetype = guide_legend(order = 3))
+       ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(linetype = 0), order = 1), # remove line from site legend
+              color = ggplot2::guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
+              linetype = ggplot2::guide_legend(order = 3))
    } else {
      # If no predators are selected, do nothing
    }
@@ -122,15 +122,15 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
 
    # Add geom_text to the plot to show the total number of smolt per site
    size_plot <- size_plot +
-     geom_text(data = summary_data, aes(x = 170, y = Inf, label = label), vjust = 1.5, hjust = 0, size = 3)
+     ggplot2::geom_text(data = summary_data, ggplot2::aes(x = 170, y = Inf, label = label), vjust = 1.5, hjust = 0, size = 3)
 
 
   # minor aesthetic adjustments
    size_plot <- size_plot +
-     theme(strip.background = element_rect(fill = "lightgrey"),
-           strip.text = element_text(colour = 'black'),
-           panel.spacing = unit(2, "lines")) +
-     expand_limits(y = c(0, NA))  # Adjust y-axis limits as needed
+     ggplot2::theme(strip.background = ggplot2::element_rect(fill = "lightgrey"),
+           strip.text = ggplot2::element_text(colour = 'black'),
+           panel.spacing = ggplot2::unit(2, "lines")) +
+     ggplot2::expand_limits(y = c(0, NA))  # Adjust y-axis limits as needed
 
 
    # Print summary_data

@@ -15,9 +15,9 @@ create_summary_data <- function(data, group_vars) {
 
   # Create a summary data frame that contains the total number of smolt per site per year, month, or half-month
   summary_data <- data %>%
-    group_by(!!!group_vars, site) %>%
-    summarise(nsite = sum(n(), na.rm = TRUE)) %>%
-    ungroup()
+    dplyr::group_by(!!!group_vars, site) %>%
+    dplyr::summarise(nsite = sum(dplyr::n(), na.rm = TRUE)) %>%
+    dplyr::ungroup()
 
   # Fill in the missing combinations of your grouping variables and site with 0
   summary_data <- tidyr::complete(summary_data, !!!group_vars, site, fill = list(nsite = 0))
@@ -34,13 +34,13 @@ create_summary_data <- function(data, group_vars) {
 
   # Create the label
   summary_data <- summary_data %>%
-    mutate(label = paste(site, "n= ", nsite))
+    dplyr::mutate(label = paste(site, "n= ", nsite))
 
   # Combine the labels for "BON" and "LWG"
   summary_data <- summary_data %>%
-    group_by(!!!group_vars) %>%
-    summarise(label = paste(label, collapse = "\n")) %>%
-    ungroup()
+    dplyr::group_by(!!!group_vars) %>%
+    dplyr::summarise(label = paste(label, collapse = "\n")) %>%
+    dplyr::ungroup()
 
   return(summary_data)
 }

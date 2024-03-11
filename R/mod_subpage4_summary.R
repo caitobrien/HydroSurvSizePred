@@ -68,7 +68,7 @@ mod_subpage4_summary_ui <- function(id){
         #select year
         column(
           width = 3,
-          pickerInput(
+          shinyWidgets::pickerInput(
             inputId = ns("select_year"),
             label = "Select Year(s)",
             choices = sort(unique(df_fish$year)),
@@ -115,20 +115,20 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
      #set reactive for size plot
     df_size_filtered<-reactive({
       data_size %>%
-        filter(site %in% c(input$select_site),
+        dplyr::filter(site %in% c(input$select_site),
                year %in% c(input$select_year))
     })
 
   #set reactive for theshold lines on size plot
     df_pred_threshold_filtered<-reactive({
       data_pred_threshold%>%
-        filter(species %in% c(input$select_predator))
+        dplyr::filter(species %in% c(input$select_predator))
     })
 
   #set reactive for pred risk plot
     df_pred_risk_filtered<-reactive({
       data_pred_risk%>%
-        filter(predator %in% c(input$select_predator),
+        dplyr::filter(predator %in% c(input$select_predator),
                site %in% c(input$select_site),
                year %in% c(input$select_year))
     })
@@ -136,7 +136,7 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
   # set reactive for pct_survival
     df_surv_filtered<-reactive({
       data_surv%>%
-        filter(migration %in% c(input$select_passtype),
+        dplyr::filter(migration %in% c(input$select_passtype),
                year %in% c(input$select_year))
     })
 
@@ -150,9 +150,9 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
         year_selected <- input$select_year[i]
 
         # Filter data for the current year
-        data_size_year <- df_size_filtered() %>% filter(year == year_selected)
-        data_pred_risk_year <- df_pred_risk_filtered() %>% filter(year == year_selected)
-        data_surv_year <- df_surv_filtered() %>% filter(year == year_selected)
+        data_size_year <- df_size_filtered() %>% dplyr::filter(year == year_selected)
+        data_pred_risk_year <- df_pred_risk_filtered() %>% dplyr::filter(year == year_selected)
+        data_surv_year <- df_surv_filtered() %>% dplyr::filter(year == year_selected)
 
         plots_list[[as.character(year_selected)]] <- fct_summary_plot(
           data_size = data_size_year,
@@ -166,7 +166,7 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
 
       # Arrange plots side by side using patchwork
       if (length(plots_list) > 0) {
-        top_legends <- wrap_plots(plots_list, ncol = 1)
+        top_legends <- patchwork::wrap_plots(plots_list, ncol = 1)
         print(top_legends)
       } else {
         # Handle case when no years are selected

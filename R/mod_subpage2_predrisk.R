@@ -65,7 +65,7 @@ mod_subpage2_predrisk_server <- function(id, data){
     # Filter data based on slider input
     filtered_data <- reactive({
      data %>%
-        filter(predator %in% c(input$select_pred))
+        dplyr::filter(predator %in% c(input$select_pred))
     })
 
     #render plot all year

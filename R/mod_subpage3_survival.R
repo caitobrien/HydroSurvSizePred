@@ -104,7 +104,7 @@ mod_subpage3_survival_server <- function(id, data){
     # Filter data based on slider input
     filtered_data <- reactive({
       data %>%
-        filter(
+        dplyr::filter(
           reach %in% c(input$select_reach),
          # predator %in% c(input$select_pred),
           migration %in% c(input$select_passtype),

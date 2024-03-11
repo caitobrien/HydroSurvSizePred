@@ -13,71 +13,71 @@ fct_summary_plot <- function(data_size, data_pred_threshold, data_pred_risk, dat
 #size distribution plot
   #sort year
   data_size <- data_size %>%
-    mutate( year = factor(year, levels = sort(unique(year))))
+    dplyr::mutate( year = factor(year, levels = sort(unique(year))))
 
 size_plot <- data_size %>%
-  ggplot(aes(x = length)) +
-  geom_histogram(aes(fill = site), binwidth = 5, alpha = .5) +
-  geom_vline(data = filter(data_pred_threshold,  type == "median"), aes(color = species, xintercept = threshold, linetype = type )) +
-  scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
+  ggplot2::ggplot(ggplot2::aes(x = length)) +
+  ggplot2::geom_histogram(ggplot2::aes(fill = site), binwidth = 5, alpha = .5) +
+  ggplot2::geom_vline(data = dplyr::filter(data_pred_threshold,  type == "median"), ggplot2::aes(color = species, xintercept = threshold, linetype = type )) +
+  ggplot2::scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
                     labels = c("steelblue4"= "LWG", "#b47747"= "BON")) +
-  scale_color_manual(values = c("N. Pikeminnow" = "darkgreen", "Pacific Hake" = "goldenrod"),
+  ggplot2::scale_color_manual(values = c("N. Pikeminnow" = "darkgreen", "Pacific Hake" = "goldenrod"),
                      labels = c("darkgreen"="N. Pikeminnow", "goldenrod" ="Pacific Hake")) +
-  scale_linetype_manual(values = "solid",
+  ggplot2::scale_linetype_manual(values = "solid",
                         labels = "Median") +
-  labs(
+  ggplot2::labs(
     x = "Fork length (mm)",
     y= "Number of smolt",
     fill = "Location",
     color = "Predator",
     linetype = "Predator threshold") +
-  guides(fill = guide_legend(order = 1),
-         color = guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
-         linetype = guide_legend(order = 3)) +
-  theme_light()
+  ggplot2::guides(fill = ggplot2::guide_legend(order = 1),
+         color = ggplot2::guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
+         linetype = ggplot2::guide_legend(order = 3)) +
+  ggplot2::theme_light()
 
 
 #predation risk plot
 pred_plot <- data_pred_risk%>%
-  ggplot(aes(y=pct_susceptible, x=site, fill = predator)) +
-  geom_bar(stat= "identity", position = position_dodge()) +
-  scale_fill_manual (values = c( "Pacific Hake" = "goldenrod", "N. Pikeminnow" = "darkgreen"),
+  ggplot2::ggplot(ggplot2::aes(y=pct_susceptible, x=site, fill = predator)) +
+  ggplot2::geom_bar(stat= "identity", position = ggplot2::position_dodge()) +
+  ggplot2::scale_fill_manual (values = c( "Pacific Hake" = "goldenrod", "N. Pikeminnow" = "darkgreen"),
                      labels = c( "goldenrod" ="Pacific Hake", "darkgreen"="N. Pikeminnow")) +
-  labs(y = "Predation risk (%)",
+  ggplot2::labs(y = "Predation risk (%)",
        x = "Location") +
-  geom_text(aes(label = paste0(round(pct_susceptible*100, 1), "%")), vjust = -0.5, position = position_dodge(0.9)) +
-  scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible) * 1.1)) + # Adjust y-axis limits
-  guides(fill = "none") +
-  theme_light()
+  ggplot2::geom_text(ggplot2::aes(label = paste0(round(pct_susceptible*100, 1), "%")), vjust = -0.5, position = ggplot2::position_dodge(0.9)) +
+  ggplot2::scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible) * 1.1)) + # Adjust y-axis limits
+  ggplot2::guides(fill = "none") +
+  ggplot2::theme_light()
 
 #survival plot
 surv_plot<- data_surv %>%
-  filter(reach == "LGR_BOA") %>%
-  ggplot(aes(x = as.factor(year), y = median/100))+
-  geom_pointrange(aes(color= migration,y=median/100, ymin=min/100, ymax=max/100),
+  dplyr::filter(reach == "LGR_BOA") %>%
+  ggplot2::ggplot(ggplot2::aes(x = as.factor(year), y = median/100))+
+  ggplot2::geom_pointrange(ggplot2::aes(color= migration,y=median/100, ymin=min/100, ymax=max/100),
                   shape =21,
                   size = 1,
                   lwd =.25,
-                  position = position_jitter())+
-  labs( y= "Estimated survival (%)",
+                  position = ggplot2::position_jitter())+
+  ggplot2::labs( y= "Estimated survival (%)",
         x = "Smolt release year",
         # shape = "Predation risk (%)",
         color = "Passage type",
         linetype = "Median") +
-  scale_y_continuous(labels = scales::percent_format())+
-  guides(color = guide_legend(order = 1)) +
-  theme_light()
+  ggplot2::scale_y_continuous(labels = scales::percent_format())+
+  ggplot2::guides(color = ggplot2::guide_legend(order = 1)) +
+  ggplot2::theme_light()
 
 
 # Modify the ggplot calls to conditionally hide the legend
-  size_plot <- size_plot + theme(legend.position = if (show_legend) 'top' else 'none') + ggtitle(paste0("Year of interest: ", year)) #only add title to leftmost plot to left justify title; move as needed
-  pred_plot <- pred_plot + theme(legend.position = if (show_legend) 'top' else 'none')
-  surv_plot <- surv_plot + theme(legend.position = if (show_legend) 'top' else 'none')
+  size_plot <- size_plot + ggplot2::theme(legend.position = if (show_legend) 'top' else 'none') + ggplot2::ggtitle(paste0("Year of interest: ", year)) #only add title to leftmost plot to left justify title; move as needed
+  pred_plot <- pred_plot + ggplot2::theme(legend.position = if (show_legend) 'top' else 'none')
+  surv_plot <- surv_plot + ggplot2::theme(legend.position = if (show_legend) 'top' else 'none')
 
   # Arrange plots with patchwork and add annotation
   top_legends <- (
     (size_plot | pred_plot | surv_plot ) +
-      plot_layout(guides = if (show_legend) "collect" else "keep")
+      patchwork::plot_layout(guides = if (show_legend) "collect" else "keep")
   )
 
   # Display the plot
