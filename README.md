@@ -21,8 +21,8 @@ risk from Northern Pikeminnow and Pacific Hake, and survival across
 years and seasons during downstream migration through the Federal
 Columbia River Power System Hydrosystem (FCRPS), Pacific Northwest, USA.
 
-*Please note that this Shiny App is dependent on data availability and
-serves as an exploratory tool.*
+*Please note that this Shiny App is currently under development and
+dependent on data availability. This app serves as an exploratory tool.*
 
 ## Installation
 
