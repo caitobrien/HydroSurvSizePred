@@ -10,6 +10,7 @@ Imports:
     ggh4x,
     ggplot2,
     golem (>= 0.4.1),
+    leaflet,
     magrittr,
     patchwork,
     plotly,
