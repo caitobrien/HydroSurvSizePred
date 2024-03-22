@@ -58,13 +58,14 @@ mod_welcome_page_ui <- function(id) {
         width = 6,
         shinydashboard::box(
           width = NULL,
-           shiny::img(src = "www/map.png", style = "max-width:100%; height:auto;"),
+          title = "Pacific Northwest Map with Columbia River and Dams",
+           # shiny::img(src = "www/map.png", style = "max-width:100%; height:auto;"),
+          leaflet::leafletOutput(ns("map")),
           br(),
           "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles) along Spring/Summer Chinook salmon and Steelhead migratory routes."
         )
       )
-    ),
-    fluidRow(shinydashboard::box( leaflet::leafletOutput(ns("map"), height = 400)))
+    )
   )
 }
 
@@ -85,7 +86,7 @@ mod_welcome_page_server <- function(id){
 
     output$map <- leaflet::renderLeaflet({
       leaflet::leaflet() %>%
-        leaflet::setView(lng = -120, lat = 45, zoom = 7) %>%
+        leaflet::setView(lng = -120, lat = 45, zoom = 5) %>%
         leaflet::addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                           attribution = 'Tiles &copy; <a href="https://www.carto.com/">Carto</a>') %>%
         leaflet::addMarkers(data = rivers_data,
@@ -94,8 +95,7 @@ mod_welcome_page_server <- function(id){
                             label = ~Name)
     })
 
-
-   # mod_welcome_page_submodule_leaflet_map_server("map_1")
+   # mod_welcome_page_submodule_leaflet_map_server("welcome_page_submodule_leaflet_map_1")
   })
 }
 

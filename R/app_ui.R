@@ -38,6 +38,8 @@ df_pred_summary<-read.csv(here::here("data/predation_risk", "predtopreySL_to_pct
 df_survival<-read.csv(here::here("data/survival", "cjs_reach_survival.csv"))
 
 
+library(fresh)
+
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
@@ -63,6 +65,10 @@ app_ui <- function(request) {
         )
       ),
       shinydashboard::dashboardBody(
+        # tags$head(
+        #   tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+        # ),
+        fresh::use_theme(SacPAStheme),
         shinydashboard::tabItems(
           shinydashboard::tabItem("welcome_page",
                   mod_welcome_page_ui("welcome_page_1")),
