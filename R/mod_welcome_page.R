@@ -10,21 +10,39 @@
 mod_welcome_page_ui <- function(id) {
   ns <- NS(id)
   tagList(
+    # fluidRow(
+    #   tags$img(src="www/welcomebanner.svg", width = "100%",height = "400px")
+    # ),
     fluidRow(
       shinydashboard::box(
-        title = "Welcome to the HydroSurvSizePred shinyAPP,",
+        title = "Welcome to HydroSurvSizePred,",
         width = 12,
         solidHeader = TRUE,
         status = "primary",
-        em("an exploratory tool...")
+        em("a Shiny App to explore size selective predation on salmon survival in the Columbia Basin hydrosystem")
       )
     ),
     fluidRow(
+      column(width = 3),  # Empty column to center map
       column(
         width = 6,
         shinydashboard::box(
-          title = "What does this application do?",
           width = NULL,
+          solidHeader = FALSE,
+          status = "primary",
+          title = "Pacific Northwest Map with Columbia River and Dams",
+          # shiny::img(src = "www/map.png", style = "max-width:100%; height:auto;"),
+          leaflet::leafletOutput(ns("map")),
+          br(),
+          "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles) along Spring/Summer Chinook salmon and Steelhead migratory routes."
+        )
+      ),
+      column(width = 3),  # Empty column to center map
+    ),
+    fluidRow(
+        shinydashboard::box(
+          title = "What does this application do?",
+          width = 12,
           solidHeader = TRUE,
           status = "primary",
           div(
@@ -35,7 +53,7 @@ mod_welcome_page_ui <- function(id) {
         ),
         shinydashboard::box(
           title = "How to use this application?",
-          width = NULL,
+          width = 12,
           solidHeader = TRUE,
           status = "primary",
             HTML("
@@ -53,19 +71,7 @@ mod_welcome_page_ui <- function(id) {
                  </div>
                  </div>")
       )
-      ),
-      column(
-        width = 6,
-        shinydashboard::box(
-          width = NULL,
-          title = "Pacific Northwest Map with Columbia River and Dams",
-           # shiny::img(src = "www/map.png", style = "max-width:100%; height:auto;"),
-          leaflet::leafletOutput(ns("map")),
-          br(),
-          "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles) along Spring/Summer Chinook salmon and Steelhead migratory routes."
-        )
       )
-    )
   )
 }
 
@@ -89,10 +95,20 @@ mod_welcome_page_server <- function(id){
         leaflet::setView(lng = -120, lat = 45, zoom = 5) %>%
         leaflet::addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                           attribution = 'Tiles &copy; <a href="https://www.carto.com/">Carto</a>') %>%
-        leaflet::addMarkers(data = rivers_data,
-                            lng = ~Lon,
-                            lat = ~Lat,
-                            label = ~Name)
+        leaflet::addAwesomeMarkers(
+          data = rivers_data,
+          lng = ~Lon,
+          lat = ~Lat,
+          label = ~Name,
+          icon = awesomeIcons(
+          # icon = 'cloud', #change to special icon
+          iconColor = 'black',
+          library = 'fa',
+          markerColor = 'lightgray'
+        )) %>%
+        #add crosshairs to reset to setView position
+      leaflet::addEasyButton(easyButton(
+        icon="fa-crosshairs", title="Locate",  onClick = JS("function(btn, map) { map.setView([45, -120], 5); }")))
     })
 
    # mod_welcome_page_submodule_leaflet_map_server("welcome_page_submodule_leaflet_map_1")

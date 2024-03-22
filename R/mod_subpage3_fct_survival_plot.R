@@ -24,7 +24,8 @@ fct_survival_plot <- function(data){
     ggplot2::scale_y_continuous(labels = scales::percent_format())+
     ggplot2::facet_wrap(~reach, ncol =1,scales = "free")+
     ggplot2::theme_light() +
-    ggplot2::theme(panel.spacing.y = ggplot2::unit(1, "cm"))
+    ggplot2::theme(panel.spacing.y = ggplot2::unit(1, "cm"),
+                   panel.grid.minor = element_blank())
 
   plotly::ggplotly(p, height = 900 )
 

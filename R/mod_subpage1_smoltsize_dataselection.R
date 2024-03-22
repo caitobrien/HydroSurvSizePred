@@ -43,7 +43,7 @@ mod_subpage1_smoltsize_dataselection_ui <- function(id) {
           inputId = ns("select_year"),
           label = "Select year(s)",
           choices = sort(unique(df_fish$year)),
-          selected = 2000,
+          selected = 2019,
           options = list(`actions-box` = TRUE),
           multiple = TRUE
         )
