@@ -15,20 +15,24 @@ mod_subpage1_smoltsize_ui <- function(id) {
         width = 12,
         solidHeader = TRUE,
         status = "primary",
-        title = "Smolt Size Distributions",
-        HTML("insert text here that summrizes smolt size distribution and how to explore/connect to next section"),
         collapsible = TRUE,
-        collapsed = FALSE
+        collapsed = FALSE,
+        title = "Smolt Size Distributions",
+        HTML("The distribution of smolt fork lengths can be explored across years, months, and half-months throughout the outmigration season."),
+
       ),
 
       shinydashboard::box(
         width = 12,
-        title = HTML("<b>Select factors of interest as you explore smolt length distributions:</b>"),
+        status = "info",
+        collapsible = TRUE,
+        collapsed = FALSE,
+        title = "Select factors of interest as you explore smolt size distributions:",
         mod_subpage1_smoltsize_dataselection_ui("subpage1_smoltsize_dataselection_1")
       ),
 
       shinydashboard::box(
-        title = "Add reactive plot title to highlight years and location user selected",
+        title = "Below displays selected size distributions in comparison to predator size thresholds:",
         status = "info",
         width = 12,
         height = "auto",
@@ -48,9 +52,10 @@ mod_subpage1_smoltsize_ui <- function(id) {
         fluidRow(
           column(
             width = 12,
-            HTML("<b>Select tabs below to adjust temporal resolution:</b>")
+            HTML("Select tabs below to adjust temporal resolution:")
           )
         ),
+        br(),
         tabsetPanel(
           id = "myTabs",
           tabPanel("Annual",

@@ -31,14 +31,13 @@ pred_long<-predator_thresholds %>%
   dplyr::mutate(type = ifelse(type != "median","min/max", "median"),
          predator = species)
 
-df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv"))
+df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv")) %>%
+  mutate(site = factor(site, levels = c("BON", "LWG")))
 
 df_pred_summary<-read.csv(here::here("data/predation_risk", "predtopreySL_to_pctsusceptible.csv"))
 
 df_survival<-read.csv(here::here("data/survival", "cjs_reach_survival.csv"))
 
-
-library(fresh)
 
 app_ui <- function(request) {
   tagList(
@@ -48,7 +47,7 @@ app_ui <- function(request) {
 
      # Your application UI logic
     shinydashboard::dashboardPage(
-      shinydashboard::dashboardHeader(title = "Size-selective Predator Survival Predictions"),
+      shinydashboard::dashboardHeader(title = "Columbia Basin Research"),
       shinydashboard::dashboardSidebar(
         shinydashboard::sidebarMenu(
           # Setting id makes input$tabs give the tabName of currently-selected tab
@@ -65,10 +64,7 @@ app_ui <- function(request) {
         )
       ),
       shinydashboard::dashboardBody(
-        # tags$head(
-        #   tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
-        # ),
-        fresh::use_theme(SacPAStheme),
+        fresh::use_theme(CBRtheme), #adjust default shinydashboard theme colors
         shinydashboard::tabItems(
           shinydashboard::tabItem("welcome_page",
                   mod_welcome_page_ui("welcome_page_1")),
@@ -76,7 +72,7 @@ app_ui <- function(request) {
                   mod_main_page_ui("main_page_1")),
           shinydashboard::tabItem("subpage1",
                   mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
-          shinydashboard::tabItem("subpage2", h2("Predation Risk Content"),
+          shinydashboard::tabItem("subpage2",
                    mod_subpage2_predrisk_ui("mod_subpage2_predrisk_1")),
           shinydashboard::tabItem("subpage3",
                   mod_subpage3_survival_ui("subpage3_survival_1")),

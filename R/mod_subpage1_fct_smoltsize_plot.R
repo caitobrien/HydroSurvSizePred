@@ -60,7 +60,8 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
     ggplot2::theme_light() +
     # facet_wrap(~get(facet_by), ncol = 4, scales = "free") +
     ggplot2::theme(strip.text = ggplot2::element_text(color = "black"),
-          legend.position = "top")
+          legend.position = "top",
+          panel.grid.minor = element_blank())
 
 
    # Facet  base plot depending on facet_by input in function
