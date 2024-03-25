@@ -17,14 +17,14 @@ mod_subpage3_survival_ui <- function(id){
         solidHeader = TRUE,
         status = "primary",
         title = "Estimated Survival by Reach",
-        HTML("<b>Survival:</b> Estimates of survival from LWG-BON (downstream survival), BON-BOA (estuary & ocean survival), and LWG-BOA were determined from PIT tagged fish data from PTAGIS. Survival of transported fish from LGR-BON is assumed to be 1."),
+        HTML("Predicted survival from LWG-BON (downstream survival), BON-BOA (estuary & ocean survival), and LWG-BOA using CJS modeling. Survival of transported fish from LGR-BON is assumed to be 1."),
         collapsible = TRUE,
-        collapsed = TRUE
+        collapsed = FALSE
       ),
 
       shinydashboard::box(
         width = 12,
-        title = "Select inputs",
+        title = "Select reach, passage type and year to explore predicted survival:",
         status = "info",
         collapsible = TRUE,
         collapsed = FALSE,
@@ -82,7 +82,7 @@ mod_subpage3_survival_ui <- function(id){
       shinydashboard::box(
         width = 12,
         height = "850px",
-        title = "Survival by reach",
+        title = "Display reach selected survival by passage type and year:",
         status = "info",
         collapsible = TRUE,
         collapsed = FALSE,

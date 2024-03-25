@@ -61,7 +61,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
     # facet_wrap(~get(facet_by), ncol = 4, scales = "free") +
     ggplot2::theme(strip.text = ggplot2::element_text(color = "black"),
           legend.position = "top",
-          panel.grid.minor = element_blank())
+          panel.grid = ggplot2::element_blank())
 
 
    # Facet  base plot depending on facet_by input in function
@@ -84,7 +84,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
    # predator thresholds dataframe used for vlines
    vlines_data <- data.frame(
      xintercept = c(166.165, 76, 255, 110, 70, 200), #set thresholds based on ???
-     color = c("darkgreen", "darkgreen", "darkgreen", "goldenrod", "goldenrod", "goldenrod"),
+     color = c("black", "black", "black", "grey", "grey", "grey"),
      linetype = c("solid", "dashed", "dashed", "solid", "dashed", "dashed"),
      label = c("N. Pikeminnow", "N. Pikeminnow", "N. Pikeminnow",
                "Pacific Hake", "Pacific Hake", "Pacific Hake")
@@ -98,7 +98,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
        ggplot2::geom_vline(data = vlines_data[vlines_data$label %in% predators_selected, ],
                   ggplot2::aes(xintercept = xintercept, color = color, linetype = linetype),
                   show.legend = TRUE) +
-       ggplot2::scale_color_manual(values = c("darkgreen" = "darkgreen", "goldenrod" = "goldenrod"),
+       ggplot2::scale_color_manual(values = c("black" = "black", "grey" = "grey"),
                           labels = c("N. Pikeminnow", "Pacfic hake"),
                           name = "Predator species") +
        ggplot2::scale_linetype_manual(values = c("solid" = "solid", "dashed" = "dashed"),

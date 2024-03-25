@@ -11,7 +11,7 @@ app_server <- function(input, output, session) {
 
 
 
-  mod_main_page_server("main_page_1")
+  # mod_main_page_server("main_page_1")
 
   #retrieve reactive values to use in plots and tables as needed
   smoltsize_dataselect_reactives <- mod_subpage1_smoltsize_dataselection_server("subpage1_smoltsize_dataselection_1")

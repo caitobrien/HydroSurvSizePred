@@ -21,8 +21,8 @@ size_plot <- data_size %>%
   ggplot2::geom_vline(data = dplyr::filter(data_pred_threshold,  type == "median"), ggplot2::aes(color = species, xintercept = threshold, linetype = type )) +
   ggplot2::scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
                     labels = c("steelblue4"= "LWG", "#b47747"= "BON")) +
-  ggplot2::scale_color_manual(values = c("N. Pikeminnow" = "darkgreen", "Pacific Hake" = "goldenrod"),
-                     labels = c("darkgreen"="N. Pikeminnow", "goldenrod" ="Pacific Hake")) +
+  ggplot2::scale_color_manual(values = c("N. Pikeminnow" = "black", "Pacific Hake" = "grey"),
+                     labels = c("black"="N. Pikeminnow", "grey" ="Pacific Hake")) +
   ggplot2::scale_linetype_manual(values = "solid",
                         labels = "Median") +
   ggplot2::labs(
@@ -35,22 +35,22 @@ size_plot <- data_size %>%
          color = ggplot2::guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
          linetype = ggplot2::guide_legend(order = 3)) +
   ggplot2::theme_light() +
-  ggplot2::theme(panel.grid = element_blank())
+  ggplot2::theme(panel.grid = ggplot2::element_blank())
 
 
 #predation risk plot
 pred_plot <- data_pred_risk%>%
   ggplot2::ggplot(ggplot2::aes(y=pct_susceptible, x=site, fill = predator)) +
   ggplot2::geom_bar(stat= "identity", position = ggplot2::position_dodge()) +
-  ggplot2::scale_fill_manual (values = c( "Pacific Hake" = "goldenrod", "N. Pikeminnow" = "darkgreen"),
-                     labels = c( "goldenrod" ="Pacific Hake", "darkgreen"="N. Pikeminnow")) +
+  ggplot2::scale_fill_manual (values = c( "Pacific Hake" = "grey", "N. Pikeminnow" = "black"),
+                     labels = c( "grey" ="Pacific Hake", "black"="N. Pikeminnow")) +
   ggplot2::labs(y = "Predation risk (%)",
        x = "Location") +
   ggplot2::geom_text(ggplot2::aes(label = paste0(round(pct_susceptible*100, 1), "%")), vjust = -0.5, position = ggplot2::position_dodge(0.9)) +
   ggplot2::scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible) * 1.1)) + # Adjust y-axis limits
   ggplot2::guides(fill = "none") +
   ggplot2::theme_light() +
-  ggplot2::theme(panel.grid = element_blank())
+  ggplot2::theme(panel.grid = ggplot2::element_blank())
 
 #survival plot
 surv_plot<- data_surv %>%
@@ -69,7 +69,7 @@ surv_plot<- data_surv %>%
   ggplot2::scale_y_continuous(labels = scales::percent_format())+
   ggplot2::guides(color = ggplot2::guide_legend(order = 1)) +
   ggplot2::theme_light() +
-  ggplot2::theme(panel.grid = element_blank())
+  ggplot2::theme(panel.grid = ggplot2::element_blank())
 
 
 # Modify the ggplot calls to conditionally hide the legend

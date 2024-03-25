@@ -44,7 +44,7 @@ fct_predrisk_bar_plot <- function(data){
                           ncol = 1)+
       ggplot2::theme_light() +
       ggplot2::theme(panel.spacing.y = ggplot2::unit(1, "cm"),
-                     panel.grid = element_blank())
+                     panel.grid = ggplot2::element_blank())
 
     plotly::ggplotly(p)
 

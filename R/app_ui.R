@@ -32,7 +32,7 @@ pred_long<-predator_thresholds %>%
          predator = species)
 
 df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv")) %>%
-  mutate(site = factor(site, levels = c("BON", "LWG")))
+  dplyr::mutate(site = factor(site, levels = c("BON", "LWG")))
 
 df_pred_summary<-read.csv(here::here("data/predation_risk", "predtopreySL_to_pctsusceptible.csv"))
 
@@ -54,7 +54,7 @@ app_ui <- function(request) {
           id = "tabs",
           shinydashboard::menuItem("Welcome", tabName = "welcome_page", icon = icon("home")),
           shinydashboard::menuItem("SizePred Survival App", tabName = "figs", icon = icon("chart-line"),
-                                   shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "main_page", icon = icon("diagram-project")),
+                                   # shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "main_page", icon = icon("diagram-project")),
                                    shinydashboard::menuSubItem("Smolt Size", tabName = "subpage1", icon = icon("ruler-horizontal")),
                                    shinydashboard::menuSubItem("Predation Risk", tabName = "subpage2", icon = icon("arrow-trend-down")),
                                    shinydashboard::menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up")),
@@ -68,8 +68,8 @@ app_ui <- function(request) {
         shinydashboard::tabItems(
           shinydashboard::tabItem("welcome_page",
                   mod_welcome_page_ui("welcome_page_1")),
-          shinydashboard::tabItem("main_page", h2("Summary of smolt size, predation risk and estimated survival for Chinook Salmon"),
-                  mod_main_page_ui("main_page_1")),
+          # shinydashboard::tabItem("main_page", h2("Summary of smolt size, predation risk and estimated survival for Chinook Salmon"),
+          #         mod_main_page_ui("main_page_1")),
           shinydashboard::tabItem("subpage1",
                   mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
           shinydashboard::tabItem("subpage2",

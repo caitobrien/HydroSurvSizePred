@@ -32,7 +32,7 @@ mod_subpage1_smoltsize_ui <- function(id) {
       ),
 
       shinydashboard::box(
-        title = "Below displays selected size distributions in comparison to predator size thresholds:",
+        title = "Display selected size distributions in comparison to predator size thresholds:",
         status = "info",
         width = 12,
         height = "auto",

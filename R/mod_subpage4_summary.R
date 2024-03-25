@@ -17,14 +17,14 @@ mod_subpage4_summary_ui <- function(id){
         solidHeader = TRUE,
         status = "primary",
         title = "Summary of size distribution, predation risk, and estimated survival",
-        HTML("<b>Length, predation risk, survival:</b> A comparison between length distributions predation risk, and LWG-BOA survival is available for viewing across years."),
+        HTML("A comparison between smolt size distributions, predation risk, and estimated LWG-BOA survival across years."),
         collapsible = TRUE,
-        collapsed = TRUE
+        collapsed = FALSE
       ),
 
       shinydashboard::box(
         width = 12,
-        title = "Select inputs",
+        title = "Select factors of interest as you explore:",
         status = "info",
         collapsible = TRUE,
         collapsed = FALSE,
@@ -82,7 +82,7 @@ mod_subpage4_summary_ui <- function(id){
       shinydashboard::box(
         width = 12,
         height = "850px",
-        title = "Summary by year",
+        title = "Display summary of size distribution, predation risk, and estimate survival by year:",
         status = "info",
         collapsible = TRUE,
         collapsed = FALSE,

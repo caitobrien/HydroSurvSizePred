@@ -100,15 +100,15 @@ mod_welcome_page_server <- function(id){
           lng = ~Lon,
           lat = ~Lat,
           label = ~Name,
-          icon = awesomeIcons(
+          icon = leaflet::awesomeIcons(
           # icon = 'cloud', #change to special icon
           iconColor = 'black',
           library = 'fa',
           markerColor = 'lightgray'
         )) %>%
         #add crosshairs to reset to setView position
-      leaflet::addEasyButton(easyButton(
-        icon="fa-crosshairs", title="Locate",  onClick = JS("function(btn, map) { map.setView([45, -120], 5); }")))
+      leaflet::addEasyButton(leaflet::easyButton(
+        icon="fa-crosshairs", title="Locate",  onClick = leaflet::JS("function(btn, map) { map.setView([45, -120], 5); }")))
     })
 
    # mod_welcome_page_submodule_leaflet_map_server("welcome_page_submodule_leaflet_map_1")
