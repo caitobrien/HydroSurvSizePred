@@ -9,6 +9,7 @@ app_server <- function(input, output, session) {
 
   mod_welcome_page_server("welcome_page_1")
 
+  mod_welcome_page_submodule_leaflet_map_server("welcome_page_submodule_leaflet_map_1")
 
 
   # mod_main_page_server("main_page_1")
