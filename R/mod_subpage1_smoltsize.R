@@ -28,7 +28,7 @@ mod_subpage1_smoltsize_ui <- function(id) {
         collapsible = TRUE,
         collapsed = FALSE,
         title = "Select factors of interest as you explore smolt size distributions:",
-        mod_subpage1_smoltsize_dataselection_ui("subpage1_smoltsize_dataselection_1")
+        mod_subpage1_submodule_smoltsize_dataselection_ui("subpage1_submodule_smoltsize_dataselection_1")
       ),
 
       shinydashboard::box(

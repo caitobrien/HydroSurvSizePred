@@ -10,9 +10,9 @@
 mod_welcome_page_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    fluidRow(
-      tags$img(src="www/welcomebanner.svg", height = "400px")
-    ),
+    # fluidRow(
+    #   tags$img(src="www/welcomebanner.svg", height = "400px")
+    # ),
     fluidRow(
       shinydashboard::box(
         title = "Welcome to HydroSurvSizePred,",

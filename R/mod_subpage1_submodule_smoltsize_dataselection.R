@@ -1,4 +1,4 @@
-#' subpage1_smoltsize_dataselection UI Function
+#' subpage1_submodule_smoltsize_dataselection UI Function
 #'
 #' @description module specific for the data selection inputs used to generate smolt size distribution plots
 #'
@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_subpage1_smoltsize_dataselection_ui <- function(id) {
+mod_subpage1_submodule_smoltsize_dataselection_ui <- function(id) {
   ns <- NS(id)
   tagList(
 
@@ -55,7 +55,7 @@ mod_subpage1_smoltsize_dataselection_ui <- function(id) {
 #' subpage1_smoltsize_dataselection Server Functions
 #'
 #' @noRd
-mod_subpage1_smoltsize_dataselection_server <- function(id) {
+mod_subpage1_submodule_smoltsize_dataselection_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -103,7 +103,7 @@ mod_subpage1_smoltsize_dataselection_server <- function(id) {
 
 
 ## To be copied in the UI
-# mod_subpage1_smoltsize_dataselection_ui("subpage1_smoltsize_dataselection_1")
+# mod_subpage1_submodule_smoltsize_dataselection_ui("subpage1_smoltsize_dataselection_1")
 
 ## To be copied in the server
-# mod_subpage1_smoltsize_dataselection_server("subpage1_smoltsize_dataselection_1")
+# mod_subpage1_submodule_smoltsize_dataselection_server("subpage1_smoltsize_dataselection_1")
