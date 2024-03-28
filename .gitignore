@@ -4,5 +4,4 @@
 .httr-oauth
 .DS_Store
 .quarto
-"Examples/data/size_distribution/LWG2AdultGrowth.csv" 
-"Examples/" 
+"Examples/"
