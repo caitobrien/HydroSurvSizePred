@@ -31,12 +31,14 @@ pred_long<-predator_thresholds %>%
   dplyr::mutate(type = ifelse(type != "median","min/max", "median"),
          predator = species)
 
-df_fish<-read.csv(here::here("data/size_distribution", "spsuCH_subset.csv")) %>%
+df_fish<-read.csv(here::here("data/spsuCH_subset.csv")) %>%
   dplyr::mutate(site = factor(site, levels = c("BON", "LWG")))
 
-df_pred_summary<-read.csv(here::here("data/predation_risk", "predtopreySL_to_pctsusceptible.csv"))
 
-df_survival<-read.csv(here::here("data/survival", "cjs_reach_survival.csv"))
+
+df_pred_summary<-read.csv(here::here("data/predtopreySL_to_pctsusceptible.csv"))
+
+df_survival<-read.csv(here::here("data/cjs_reach_survival.csv"))
 
 
 app_ui <- function(request) {
