@@ -25,7 +25,7 @@ golem::fill_desc(
   author_first_name = "CAITLIN", # Your First Name
   author_last_name = "OBRIEN", # Your Last Name
   author_email = "CSOBRIEN@UW.EDU", # Your Email
-  repo_url = NULL, # The URL of the GitHub Repo (optional),
+  repo_url = "https://github.com/caitobrien/HydroSurvSizePred.git", # The URL of the GitHub Repo (optional),
   pkg_version = "0.0.0.9000" # The Version of the package containing the App
 )
 
@@ -34,6 +34,7 @@ golem::set_golem_options()
 
 ## Install the required dev dependencies ----
 golem::install_dev_deps()
+golem::use_recommended_deps()
 
 ## Create Common Files ----
 ## See ?usethis for more information

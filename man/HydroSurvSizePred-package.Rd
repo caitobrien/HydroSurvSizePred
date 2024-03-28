@@ -8,6 +8,14 @@
 \description{
 App used to explore sp/su Chinook Salmon smolt length distributions, predator risk from Northern Pikeminnow and Pacific Hake, and survival across years and seasons.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/caitobrien/HydroSurvSizePred.git}
+  \item Report bugs at \url{https://github.com/caitobrien/HydroSurvSizePred.git/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: CAITLIN OBRIEN \email{CSOBRIEN@UW.EDU}
 
