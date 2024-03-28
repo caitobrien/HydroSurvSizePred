@@ -45,7 +45,7 @@ continuously being made. If you have already imported to R studio,
 please rerun `install_github("caitobrien/HydroSurvSizePred")` to see
 latest changes in the developmental version. If no changes have been
 made since last import, a warning will appear:
-`Skipping install of 'HydroSurvSizePred' from a github remote, the SHA1 (fdd71350) has not changed since last install. Use 'force = TRUE' to force installation`
+`Skipping install of 'HydroSurvSizePred' from a github remote, the SHAX (XXXXXX) has not changed since last install. Use 'force = TRUE' to force installation`
 and you have the latest developmental version imported.
 
 If you are interested in the files that support the development version,
