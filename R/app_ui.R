@@ -32,15 +32,6 @@ pred_long<-predator_thresholds %>%
   dplyr::mutate(type = ifelse(type != "median","min/max", "median"),
          predator = species)
 
-# df_fish<-read.csv(here::here("data/spsuCH_subset.csv")) %>%
-#   dplyr::mutate(site = factor(site, levels = c("BON", "LWG")))
-
-
-
-# df_pred_summary<-read.csv(here::here("data/predtopreySL_to_pctsusceptible.csv"))
-#
-# df_survival<-read.csv(here::here("data/cjs_reach_survival.csv"))
-
 
 app_ui <- function(request) {
   tagList(
@@ -50,29 +41,34 @@ app_ui <- function(request) {
 
      # Your application UI logic
     shinydashboard::dashboardPage(
+      #header
       shinydashboard::dashboardHeader(title = "Columbia Basin Research"),
+
+      #side panel
       shinydashboard::dashboardSidebar(
         shinydashboard::sidebarMenu(
-          # Setting id makes input$tabs give the tabName of currently-selected tab
           id = "tabs",
           shinydashboard::menuItem("Welcome", tabName = "welcome_page", icon = icon("home")),
           shinydashboard::menuItem("SizePred Survival App", tabName = "figs", icon = icon("chart-line"),
-                                   # shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "main_page", icon = icon("diagram-project")),
                                    shinydashboard::menuSubItem("Smolt Size", tabName = "subpage1", icon = icon("ruler-horizontal")),
                                    shinydashboard::menuSubItem("Predation Risk", tabName = "subpage2", icon = icon("arrow-trend-down")),
                                    shinydashboard::menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up")),
                                    shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "subpage4", icon = icon("diagram-project"))
-          ),
+                                   ),
           shinydashboard::menuItem("Background", tabName = "background_page", icon = icon("info"))
         )
       ),
+
+      #body
       shinydashboard::dashboardBody(
-        fresh::use_theme(CBRtheme), #adjust default shinydashboard theme colors
+
+        #adjust default shinydashboard theme colors
+        fresh::use_theme(CBRtheme),
+
+        #submenu items
         shinydashboard::tabItems(
           shinydashboard::tabItem("welcome_page",
                   mod_welcome_page_ui("welcome_page_1")),
-          # shinydashboard::tabItem("main_page", h2("Summary of smolt size, predation risk and estimated survival for Chinook Salmon"),
-          #         mod_main_page_ui("main_page_1")),
           shinydashboard::tabItem("subpage1",
                   mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
           shinydashboard::tabItem("subpage2",

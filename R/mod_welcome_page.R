@@ -49,7 +49,8 @@ mod_welcome_page_ui <- function(id) {
             <p>Smolts may also differ in size depending on the type of passage: in-river or transported passage through the hydrosystem (Lower Granite Dam [LWG] to Bonneville Dam [BON]) (Figure 1). Transported smolts may be smaller than in-river smolts because of loss of growth opportunity during their short passage through the hydrosystem (transported: 2 days; in-river: ~2-4 weeks). Smaller smolts will be at greater risk of predation than larger smolts, and predation risk will also depend on the size distribution of the predators. The proportion of fish below a size threshold can be an indicator of survival (Muir et al. 2006).</p>
               "),
       br(),
-      #leaflet map
+
+      # embedded leaflet map
       fluidRow(
         column(width = 3),  # Empty column to center map
         column(

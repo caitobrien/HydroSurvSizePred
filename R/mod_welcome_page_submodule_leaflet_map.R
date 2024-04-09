@@ -11,13 +11,6 @@ mod_welcome_page_submodule_leaflet_map_ui <- function(id){
   ns <- NS(id)
   tagList(
 
-    # shinydashboard::box(
-    #   width = NULL,
-    #   solidHeader = FALSE,
-    #   status = "primary",
-    #   title = "Map of study system: Pacific Northwest, USA ",
-    #   collapsible = TRUE,
-    #   collapsed = TRUE,
       leaflet::leafletOutput(ns("map"),
                              height = "350px"),
       br(),
