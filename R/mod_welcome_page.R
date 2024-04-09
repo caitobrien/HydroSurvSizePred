@@ -10,54 +10,66 @@
 mod_welcome_page_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    # fluidRow(
-    #   tags$img(src="www/welcomebanner.svg", height = "400px")
-    # ),
+
+    #header image
     fluidRow(
-      shinydashboard::box(
-        title = "Welcome to HydroSurvSizePred,",
-        width = 12,
-        solidHeader = TRUE,
-        status = "primary",
-        em("a Shiny App to explore size selective predation on salmon survival in the Columbia Basin hydrosystem")
+      div(
+        tags$img(src="www/welcomebanner_SIZEPRED.svg",  style = "width: 100%; height: auto; max-height: 400px; object-fit: cover;"), #adjust image& text in AI --save as .svg
+        br(),
+        br()
       )
     ),
-    #add leaflet map
-    mod_welcome_page_submodule_leaflet_map_ui("welcome_page_submodule_leaflet_map_1"),
 
+
+    #Info box
     fluidRow(
+
         shinydashboard::box(
           title = "What does this application do?",
           width = 12,
           solidHeader = TRUE,
+          collapsible = TRUE,
+          collapsed = FALSE,
           status = "primary",
-          div(
-            HTML("<p>This application can be used to explore spring/summer Chinook salmon, <em>Oncorhynchus tshawytscha</em>,  smolt length distributions, predator risk from Northern Pikeminnow and Pacific Hake, and survival across years and seasons during downstream migration through the Federal Columbia River Power System Hydrosystem (FCRPS)(Figure 1).</p>
-                 <p>Please note that this Shiny App is dependent on data availability and serves as an exploratory tool.
-                 </p>")
-          )
+          shiny::includeHTML(system.file("app/www/mod_welcome_Q1_text.html", package = "HydroSurvSizePred")),
+        )
         ),
-        shinydashboard::box(
-          title = "How to use this application?",
-          width = 12,
-          solidHeader = TRUE,
-          status = "primary",
-            HTML("
-                 <div style='text-align: left;'>
-                  <p>This <b>HydroSurvSizePred</b> is an interactive query tool to explore patterns of spring/summer-run Chinook Salmon passing Lower Granite Dam and Bonneville Dam as smolts and compare the following:
-                 </p>
-                    <div style='text-align: center; margin: auto;'>
-                    <ul style='display: inline-block; text-align: left;'>
-                     <li><b>Smolt length:</b> The distribution of smolt lengths can be explored across years, months, and half-months throughout the outmigration season. These data were queried from PTAGIS.</li>
-                     <li><b>Predation risk:</b> The percentages of smolts below size thresholds susceptible to fish predation can be viewed. The proportions were calculated following Muir et al. (2006) and the size distributions of N. Pikeminnow (Winther et al. 2021) and Pacific Hake (Taylor et al. 205) observed each year.</li>
-                     <li><b>Survival:</b> Estimates of survival from LWG-BON (downstream survival), BON-BOA (estuary & ocean survival), and LWG-BOA were determined from PIT tagged fish data from PTAGIS. Survival of transported fish from LGR-BON is assumed to be 1.</li>
-                     <li><b>Length, predation risk, survival:</b> A comparison between length distributions, predation risk, and LWG-BOA survival is available for viewing across years.
-                     </li>
-                 </ul>
-                 </div>
-                 </div>")
-      )
-      )
+
+    #overview
+    fluidRow(
+    shinydashboard::box(
+      title = "Overview",
+      width = 12,
+      solidHeader = FALSE,
+      collapsible = TRUE,
+      collapsed = TRUE,
+      status = "info",
+      br(),
+      HTML("<p>Smolts migrating downstream the Snake and Columbia rivers towards the Pacific Ocean encounter fish predators, such as Northern Pikeminnow (N. Pikeminnow, <em>Ptychocheilus oregonensis</em>). As the smolts migrate through the early ocean environment, they encounter additional fish predators, such as Pacific Hake,<em> Merluccius productus</em> (Muir et al. 2006). Size-selective predation can be particularly important for small salmon smolts. Their sizes differ across years and through the season, depending on conditions experienced that affect their growth.</p>
+            <p>Smolts may also differ in size depending on the type of passage: in-river or transported passage through the hydrosystem (Lower Granite Dam [LWG] to Bonneville Dam [BON]) (Figure 1). Transported smolts may be smaller than in-river smolts because of loss of growth opportunity during their short passage through the hydrosystem (transported: 2 days; in-river: ~2-4 weeks). Smaller smolts will be at greater risk of predation than larger smolts, and predation risk will also depend on the size distribution of the predators. The proportion of fish below a size threshold can be an indicator of survival (Muir et al. 2006).</p>
+              "),
+      br(),
+      #leaflet map
+      fluidRow(
+        column(width = 3),  # Empty column to center map
+        column(
+          width = 6,
+
+          mod_welcome_page_submodule_leaflet_map_ui("welcome_page_submodule_leaflet_map_1"),
+
+          column(width = 3) # Empty column to center map
+        )
+      ),
+      br(),
+      HTML("<p>Survival can be estimated through the hydrosystem (LGR-BON), post-hydrosystem (juveniles at BON to adults at BOA), and these reaches altogether (LGR-BOA) from fish tagged with passive integrated transponder tags and through mark-recapture modeling (Cormack 1964, Jolly 1965, Seber 1965, Gosselin et al. 2021).</p>
+              <p>This application aims to allow users to view size distribution of smolt and how that may impact predation risk through downstream migration. A user can then compare size distribution and predation risk, to predicted survival based on reach and passage type. To view each factor, see the subpages within the <b>SizePred Survival App</b>, or select the <em>Size, Predation, and Survival</em> subpage to compare all three for specific years of interest.</p>
+              <br></br>
+              <p><em>Please note that this Shiny App is dependent on data availability and serves as an exploratory tool.</em>
+              </p>")
+
+
+    )
+    )
   )
 }
 

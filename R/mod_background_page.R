@@ -19,21 +19,7 @@ mod_background_page_ui <- function(id){
         em("an exploratory app of size, predation risk, and survival in the hydrosystem")
       ),
 
-      shinydashboard::box(
-        width = 12,
-        solidHeader = FALSE,
-        title = "Overview",
-        status = "info",
-        br(),
-        HTML("<div>
-             <p>Smolts migrating downstream the Snake and Columbia rivers towards the Pacific Ocean encounter fish predators, such as Northern Pikeminnow (N. Pikeminnow, <em>Ptychocheilus oregonensis</em>). As the smolts migrate through the early ocean environment, they encounter additional fish predators, such as Pacific Hake,<em>Merluccius productus</em> (Muir et al. 2006).</p>
-              <p>Size-selective predation can be particularly important for small salmon smolts. Their sizes differ across years and through the season, depending on conditions experienced that affect their growth.</p>
-              <p>Smolts may also differ in size depending on the type of passage: in-river or transported passage through the hydrosystem (Lower Granite Dam [LWG] to Bonneville Dam [BON]). Transported smolts may be smaller than in-river smolts because of loss of growth opportunity during their short passage through the hydrosystem (transported: 2 days; in-river: ~2-4 weeks).</p>
-              <p>Smaller smolts will be at greater risk of predation than larger smolts, and predation risk will also depend on the size distribution of the predators. The proportion of fish below a size threshold can be an indicator of survival (Muir et al. 2006).</p>
-             <p>Survival can be estimated through the hydrosystem (LGR-BON), post-hydrosystem (juveniles at BON to adults at BOA), and these reaches altogether (LGR-BOA) from fish tagged with passive integrated transponder tags and through mark-recapture modeling (Cormack 1964, Jolly 1965, Seber 1965, Gosselin et al. 2021).</p>
-             </div>"
-             )
-      ),
+
       shinydashboard::box(
         width = 12,
         solidHeader = FALSE,

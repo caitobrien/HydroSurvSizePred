@@ -7,20 +7,21 @@
 
 
 # Generating sample data
-set.seed(123)
-data.test <- expand.grid(
-  year = 2000:2005,
-  doy = 150:200,
-  site = c("BON", "LWG"),
-  pass_type = c("T", "R")
-) %>%
-  dplyr::mutate(
-    length = rep( rnorm(165, mean = 120, sd = 10), length.out = 1224),
-    pctsurv = rep(rnorm(100, mean = 30, sd = 15), length.out = 1224),
-    pctprey = rep(rnorm(100, mean = 50, sd =20), length.out = 1224),
-    predator = rep(c("PH", "NH"), length.out = 1224),
-    date = as.Date(paste(year,doy), format = "%Y %j"))
+# set.seed(123)
+# data.test <- expand.grid(
+#   year = 2000:2005,
+#   doy = 150:200,
+#   site = c("BON", "LWG"),
+#   pass_type = c("T", "R")
+# ) %>%
+#   dplyr::mutate(
+#     length = rep( rnorm(165, mean = 120, sd = 10), length.out = 1224),
+#     pctsurv = rep(rnorm(100, mean = 30, sd = 15), length.out = 1224),
+#     pctprey = rep(rnorm(100, mean = 50, sd =20), length.out = 1224),
+#     predator = rep(c("PH", "NH"), length.out = 1224),
+#     date = as.Date(paste(year,doy), format = "%Y %j"))
 
+#figure a way to make this redundant (with module) or live in data
 predator_thresholds<-data.frame(species = c("N. Pikeminnow", "Pacific Hake"),
                             median = c(166.165, 110),
                             min = c(76.665, 70),
@@ -31,14 +32,14 @@ pred_long<-predator_thresholds %>%
   dplyr::mutate(type = ifelse(type != "median","min/max", "median"),
          predator = species)
 
-df_fish<-read.csv(here::here("data/spsuCH_subset.csv")) %>%
-  dplyr::mutate(site = factor(site, levels = c("BON", "LWG")))
+# df_fish<-read.csv(here::here("data/spsuCH_subset.csv")) %>%
+#   dplyr::mutate(site = factor(site, levels = c("BON", "LWG")))
 
 
 
-df_pred_summary<-read.csv(here::here("data/predtopreySL_to_pctsusceptible.csv"))
-
-df_survival<-read.csv(here::here("data/cjs_reach_survival.csv"))
+# df_pred_summary<-read.csv(here::here("data/predtopreySL_to_pctsusceptible.csv"))
+#
+# df_survival<-read.csv(here::here("data/cjs_reach_survival.csv"))
 
 
 app_ui <- function(request) {

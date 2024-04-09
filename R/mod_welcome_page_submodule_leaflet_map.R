@@ -11,23 +11,18 @@ mod_welcome_page_submodule_leaflet_map_ui <- function(id){
   ns <- NS(id)
   tagList(
 
-    fluidRow(
-      column(width = 3),  # Empty column to center map
-      column(
-        width = 6,
-        shinydashboard::box(
-          width = NULL,
-          solidHeader = FALSE,
-          status = "primary",
-          title = "Pacific Northwest Map with Columbia River and Dams",
-          # shiny::img(src = "www/map.png", style = "max-width:100%; height:auto;"),
-          leaflet::leafletOutput(ns("map")),
-          br(),
-          "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles) along Spring/Summer Chinook salmon and Steelhead migratory routes."
-        )
-      ),
-      column(width = 3),  # Empty column to center map
-    )
+    # shinydashboard::box(
+    #   width = NULL,
+    #   solidHeader = FALSE,
+    #   status = "primary",
+    #   title = "Map of study system: Pacific Northwest, USA ",
+    #   collapsible = TRUE,
+    #   collapsed = TRUE,
+      leaflet::leafletOutput(ns("map"),
+                             height = "350px"),
+      br(),
+      div(style = "text-align: left;", "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles) along Spring/Summer Chinook salmon and Steelhead migratory routes."
+          )
   )
 }
 

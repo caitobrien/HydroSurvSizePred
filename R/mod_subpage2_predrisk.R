@@ -48,6 +48,9 @@ mod_subpage2_predrisk_ui <- function(id){
             offset = 1, # Centering the column
             plotly::plotlyOutput(outputId = ns("plot_pike"), height = "50%")
           )
+        ),
+        br(),
+        HTML("The proportions of fish below a size threshold were calculated following Muir et al. (2006) and the size distributions of N. Pikeminnow (Winther et al. 2021) and Pacific Hake (Taylor et al. 205) observed each year. See <b>Supplementary Materials</b> for more details."
         )
       ),
 
