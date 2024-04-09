@@ -1,6 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^data-raw$
+data-raw/survival/
+data-raw/size_distribution/
+data-raw/predation_risk/
 dev_history.R
 ^dev$
 $run_dev.*
