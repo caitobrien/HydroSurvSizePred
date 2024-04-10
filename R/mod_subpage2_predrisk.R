@@ -27,11 +27,12 @@ mod_subpage2_predrisk_ui <- function(id){
         status = "info",
         collapsible = TRUE,
         collapsed = FALSE,
-        title = "Predation risk based on smolt size distributions and predator thresholds:",
+        title = "Predation risk by predator",
         fluidRow(
           column(
             width = 12,
-            "The figure below displays the predation risk based on Pacific Hake size thresholds across years"
+            HTML("<p>The figure below displays the predation risk based on Pacific Hake size thresholds across years.</p>
+                  <p><em>Click on the plot legend to toggle the display of locations.</em></p>")
           ),
           column(
             width = 10,
@@ -40,7 +41,7 @@ mod_subpage2_predrisk_ui <- function(id){
           )
         ),
         br(),
-        "Northern Pikeminnow have a larger size threshold, therefore most, if not all, smolt are at risk of predation based on size.",
+        "Northern Pikeminnow have a larger prey size threshold, therefore most, if not all, smolt are at risk of predation based on size.",
         br(),
         fluidRow(
           column(
@@ -54,38 +55,8 @@ mod_subpage2_predrisk_ui <- function(id){
         )
       ),
 
-      # shinydashboard::box(
-      #   width = 12,
-      #   height = "900px",
-      #   # title = "Below displays the predation risk based on selected predators across years:",
-      #   status = "info",
-      #   collapsible = TRUE,
-      #   collapsed = FALSE,
-      #   # # select locations
-      #   #     selectInput(
-      #   #       inputId = ns("select_pred"),
-      #   #       label = "Select predator(s)",
-      #   #       choices = unique(df_pred_summary$predator),
-      #   #       selected = unique(df_pred_summary$predator),
-      #   #       width = "400px",
-      #   #       multiple = T
-      #   #     ),
-      #   fluidRow(
-      #   "The figure below displays the predation risk based on Pacific Hake size thresholds across years",
-      #   plotly::plotlyOutput(outputId = ns("plot_hake"),
-      #                        height = "300px")
-      #   ),
-      #   br(),
-      #   br(),
-      #   fluidRow(
-      #   "Whereas, Northern Pikeminnow have a higher size threshold, therefore most smolt are at risk of predation. ",
-      #   plotly::plotlyOutput(outputId = ns("plot_pike"),
-      #                        height = "300px")
-      #   )
-      # ),
-
       shinydashboard::box(width = 12,
-                          title = "Add interactive size distribution and % predation risk",
+                          title = "Interactive display of predation risk on smolt size distribution",
                           status = "info",
                           collapsible = TRUE,
                           collapsed = TRUE,
@@ -107,18 +78,6 @@ mod_subpage2_predrisk_server <- function(id, data){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    # # Filter data based on slider input
-    # filtered_data <- reactive({
-    #  data %>%
-    #     dplyr::filter(predator %in% c(input$select_pred))
-    # })
-    #
-    #
-    #
-    # #render plot all year
-    # output$predrisk_plot_allyears<- plotly::renderPlotly({
-    #   fct_predrisk_bar_plot(data = filtered_data())
-    # })
 
     #selective plot showing
     output$plot_hake <- plotly::renderPlotly({
