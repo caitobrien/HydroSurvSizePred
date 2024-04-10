@@ -81,13 +81,21 @@ mod_subpage3_survival_ui <- function(id){
 
       shinydashboard::box(
         width = 12,
-        height = "850px",
-        title = "Display reach selected survival by passage type and year:",
+        title = "Reach survival by passage type and year:",
         status = "info",
         collapsible = TRUE,
         collapsed = FALSE,
 
-        plotly::plotlyOutput(outputId = ns("survival_plot"))
+        plotly::plotlyOutput(outputId = ns("survival_plot"), height = "800px")
+      ),
+
+      shinydashboard::box(
+        width = 12,
+        title = "Compare reach survival to predation risk:",
+        status = "info",
+        collapsible = TRUE,
+        collapsed = TRUE,
+        "pending plot"
       )
     )
   )

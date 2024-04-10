@@ -14,12 +14,12 @@ mod_subpage2_submodule_predrisk_smoltsize_plot_ui <- function(id){
     fluidRow(
       column(
         width = 3,
-      "Select predator(s) and year of interest:",
+      "Select factors of interest:",
 
       #select year
       shinyWidgets::pickerInput(
         inputId = ns("select_year"),
-        label = "Select year",
+        label = "Year",
         choices = sort(unique(df_fish$year)),
         selected = 2019,
         options = list(`actions-box` = TRUE),

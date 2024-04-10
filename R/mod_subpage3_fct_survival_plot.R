@@ -27,7 +27,7 @@ fct_survival_plot <- function(data){
     ggplot2::theme(panel.spacing.y = ggplot2::unit(1, "cm"),
                    panel.grid.minor = ggplot2::element_blank())
 
-  plotly::ggplotly(p, height = 900 )
+  plotly::ggplotly(p)
 
 }
 
