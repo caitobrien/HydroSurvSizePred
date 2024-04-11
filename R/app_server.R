@@ -32,7 +32,7 @@ app_server <- function(input, output, session) {
   mod_subpage2_predrisk_server("mod_subpage2_predrisk_1", data = df_pred_summary)
     mod_subpage2_submodule_predrisk_smoltsize_plot_server("subpage2_submodule_predrisk_smoltsize_plot_1")
 
-  mod_subpage3_survival_server("subpage3_survival_1", data = df_survival)
+  mod_subpage3_survival_server("subpage3_survival_1", data_surv = df_survival, data_pred_risk = df_pred_summary)
 
   mod_subpage4_summary_server("subpage4_summary_1", data_size = df_fish, data_pred_threshold = pred_long, data_pred_risk = df_pred_summary, data_surv = df_survival)
 
