@@ -34,25 +34,33 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
       Lon = c(-117.42737011713677,-117.42737011713677,-117.42019252542396 , -118.0260163871114,-118.54315348896209, -118.87984211781144,  -119.29757721597544,-120.69368083132734,-121.13417428900306,  -121.94060471598787, -121.94060471598787, -121.94060202780263, -121.94060471598787),
       passtype = c(0,0,1,0,0,0,0,0,0,0,0,1,0),
       direction = c(0,2,0,0,0,0,0,0,0,0,1,1,2),
-      detection = c(0,1,0,0,0,0,0,0,0,0,1,1,0)
+      detection = c(0,1,1,0,0,0,0,0,0,0,1,1,1)
     )
+
 
     output$map <- leaflet::renderLeaflet({
       leaflet::leaflet() %>%
         leaflet::setView(lng = -119, lat = 46, zoom = 7) %>%
         leaflet::addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                           attribution = 'Tiles &copy; <a href="https://www.carto.com/">Carto</a>') %>%
-        #base- in-river with
-        leaflet::addCircleMarkers(
-          data = dplyr::filter(rivers_data, direction %in% c("1", "0")),
-          lng = ~Lon,
-          lat = ~Lat+.1,
-          # label = ~Name,
-          color = 'grey',
-          fill = TRUE,
-          fillOpacity = 1,
-          radius = 5
+      leaflet::addRectangles(
+        lng1=-116, lat1=48,
+        lng2=-124, lat2=45,
+        fillColor = "green",
+        stroke = FALSE,
+
+        popup = "Northern Pikeminnow"
+      ) %>%
+        leaflet::addRectangles(
+          lng1=-122, lat1=52,
+          lng2=-130, lat2=43,
+          fillColor = "orange",
+          stroke = FALSE,
+
+          popup = "Pacific Hake"
         ) %>%
+
+        #outgoing- in-river with
         #highlight detection sites for outgoing
         leaflet::addCircleMarkers(
           data = dplyr::filter(rivers_data, direction %in% c("1", "0") & detection == 1),
@@ -111,17 +119,6 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
           fillOpacity = 1,
           radius = 4
         ) %>%
-        #incoming
-        leaflet::addCircleMarkers(
-          data = dplyr::filter(rivers_data,  passtype == 0 & direction %in% c("1", "0") & direction == 0),
-          lng = ~Lon,
-          lat = ~Lat-.10,
-          # label = ~Name,
-          color = 'black',
-          fill = TRUE,
-          fillOpacity = 1,
-          radius = 5
-        ) %>%
         #highlight detection sites
         leaflet::addCircleMarkers(
           data = dplyr::filter(rivers_data, passtype == 0 & direction == 2 & detection == 1),
@@ -162,7 +159,6 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
             markerColor = 'white'
           )) %>%
         leaflet::addPolylines(data = dplyr::filter(rivers_data, passtype == 0 & direction %in% c("2", "0")), lng = ~Lon, lat = ~Lat-.10, color = "black") %>%
-
         #add crosshairs to reset to setView position
         leaflet::addEasyButton(leaflet::easyButton(
           icon="fa-crosshairs", title="Locate",  onClick = leaflet::JS("function(btn, map) { map.setView([45, -120], 5); }")))
