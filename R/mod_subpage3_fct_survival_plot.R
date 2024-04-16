@@ -11,7 +11,7 @@ fct_survival_plot <- function(data) {
       levels = c("LGR_BON", "BON_BOA", "LGR_BOA"),
       labels = c("LGR_BON", "BON_BOA", "LGR_BOA")
     )) %>%
-    mutate(
+    dplyr::mutate(
       hovertext = paste("Year: ", year,
                         "<br>Passage type: ", migration,
                         "<br>Estimated survival, median: ", scales::percent(median/100, accuracy = 0.01),

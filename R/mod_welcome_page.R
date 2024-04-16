@@ -14,7 +14,7 @@ mod_welcome_page_ui <- function(id) {
     #header image
     fluidRow(
       div(
-        tags$img(src="www/welcomebanner_SIZEPRED.svg",  style = "width: 100%; height: auto; max-height: 400px; object-fit: cover;"), #adjust image& text in AI --save as .svg
+        tags$img(src="www/welcomebanner_SizePred_2.svg",  style = "width: 100%; height: auto"), #adjust image& text in AI --save as .svg
         br(),
         br()
       )
