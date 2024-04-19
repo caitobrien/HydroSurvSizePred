@@ -107,8 +107,8 @@ mod_subpage4_summary_server <- function(id, data_size, data_pred_threshold, data
          req(years_selected())
        nyears <- length(years_selected())
 
-       if (nyears > 3) {
-         plot_height<- 500 + (nyears-3)*150
+       if (nyears > 2) {
+         plot_height<- 500 + (nyears-2)*150
        }else plot_height <-500
      })
 

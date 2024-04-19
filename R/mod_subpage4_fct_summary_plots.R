@@ -43,7 +43,8 @@ size_plot <- data_size %>%
          color = ggplot2::guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
          linetype = ggplot2::guide_legend(order = 3)) +
   ggplot2::theme_light() +
-  ggplot2::theme(panel.grid = ggplot2::element_blank())
+  ggplot2::theme(panel.grid = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size = 15))
 
 
 #predation risk plot
@@ -52,7 +53,7 @@ pred_plot <- data_pred_risk%>%
   ggplot2::geom_bar(stat= "identity", position = ggplot2::position_dodge()) +
   ggplot2::scale_fill_manual (values = c( "Pacific Hake" = "grey", "N. Pikeminnow" = "black"),
                      labels = c( "grey" ="Pacific Hake", "black"="N. Pikeminnow")) +
-  ggplot2::labs(y = "Predation risk (%)",
+  ggplot2::labs(y = "Predation risk",
        x = "Location") +
   ggplot2::geom_text(ggplot2::aes(label = paste0(round(pct_susceptible*100, 1), "%")), vjust = -0.5, position = ggplot2::position_dodge(0.9)) +
   ggplot2::scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible)), expand = ggplot2::expansion(mult = c(0, .15)),
@@ -61,7 +62,8 @@ pred_plot <- data_pred_risk%>%
   #                             labels = scales::percent_format()) +
   ggplot2::guides(fill = "none") +
   ggplot2::theme_light() +
-  ggplot2::theme(panel.grid = ggplot2::element_blank())
+  ggplot2::theme(panel.grid = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size = 15))
 
 #survival plot
 surv_plot<- data_surv %>%
@@ -72,7 +74,7 @@ surv_plot<- data_surv %>%
                   size = 1,
                   lwd =.25,
                   position = ggplot2::position_jitterdodge( seed = 123))+
-  ggplot2::labs( y= "Estimated survival (%)",
+  ggplot2::labs( y= "Estimated survival",
         x = "Smolt release year",
         # shape = "Predation risk (%)",
         color = "Passage type",
@@ -80,7 +82,8 @@ surv_plot<- data_surv %>%
   ggplot2::scale_y_continuous(labels = scales::percent_format())+
   ggplot2::guides(color = ggplot2::guide_legend(order = 1)) +
   ggplot2::theme_light() +
-  ggplot2::theme(panel.grid = ggplot2::element_blank())
+  ggplot2::theme(panel.grid = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size = 15))
 
 
 

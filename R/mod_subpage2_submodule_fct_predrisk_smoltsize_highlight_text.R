@@ -44,7 +44,7 @@ fct_predrisk_smoltsize_text <- function(data_size, predator_thresholds, selected
     }
   }
 
-  title <- paste0("For year ", selected_year, ", percent of smolt distribution below predator threshold:")
+  title <- paste0("For ", selected_year, ", percent of smolt distribution below predator threshold:")
 
   if(!is.null(selected_predators)){
     HTML(paste(title, paste(percentages, collapse = "<br>"), sep = "<br>"))
