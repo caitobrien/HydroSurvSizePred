@@ -51,7 +51,7 @@ fct_predrisk_bar_plot <- function(data){
                   Location = site,
                   `Percent Susceptible` = round(pct_susceptible*100,2))
 
-  p <- plotly::plot_ly(data, x = ~Year, y = ~`Percent Susceptible`, color = ~Location, colors = c("steelblue4", "#b47747"), type = "bar") %>%
+  p <- plotly::plot_ly(data, x = ~Year, y = ~`Percent Susceptible`, color = ~Location, colors = c( "#b47747", "steelblue4"), type = "bar") %>%
     plotly::layout(yaxis = list(title = "Percent susceptible to predation", tickformat = ".2f", tickprefix = "", ticksuffix = "%"),
            xaxis = list(title = "Smolt release year"),
            barmode = 'group')
