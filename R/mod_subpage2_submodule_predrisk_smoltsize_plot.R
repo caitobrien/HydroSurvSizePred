@@ -44,7 +44,7 @@ mod_subpage2_submodule_predrisk_smoltsize_plot_ui <- function(id){
             label = "Predator threshold(s)",
             shape = "curve",
             outline = TRUE,
-            choices = unique(predator_thresholds$species),
+            choices = c("Pacific Hake", "N. Pikeminnow"), #unique(predator_thresholds$species),
             selected = NULL
           )
     ),

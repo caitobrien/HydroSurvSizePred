@@ -20,7 +20,8 @@ plot <- ggplot2::ggplot(data_size,  ggplot2::aes(x = length)) +
                           size = 1) +
   ggplot2::labs(  x = "Smolt fork length (mm)",
                   y = "Number of smolt") +
-  ggplot2::theme_classic()
+  ggplot2::theme_classic() +
+  ggplot2::theme(text = ggplot2::element_text(size = 15))
 
 # Conditionally add facet_grid()// change title based on selected passtypes
 if(is.null(selected_pass_types)) {

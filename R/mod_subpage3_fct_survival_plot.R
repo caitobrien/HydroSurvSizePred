@@ -39,12 +39,14 @@ fct_survival_plot <- function(data) {
       x = "Smolt release year",
       color = "Passage type"
     ) +
+    # ggplot2::scale_color_manual(values = c("In-river" = "steelblue4", "Transported" = "#b47747")) +
    ggplot2::facet_wrap(~reach, ncol = 1, scales = "free") +
     ggplot2::theme_light() +
     ggplot2::theme(
       panel.spacing.y = ggplot2::unit(1, "cm"),
       panel.grid.minor = ggplot2::element_blank(),
-      legend.position = "top"
+      legend.position = "top",
+      text = ggplot2::element_text(size = 15)
     )
 
   p <- plotly::ggplotly(p, tooltip = "text")

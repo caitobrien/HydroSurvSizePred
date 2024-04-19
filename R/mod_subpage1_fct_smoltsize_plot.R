@@ -61,7 +61,8 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
     # facet_wrap(~get(facet_by), ncol = 4, scales = "free") +
     ggplot2::theme(strip.text = ggplot2::element_text(color = "black"),
           legend.position = "top",
-          panel.grid = ggplot2::element_blank())
+          panel.grid = ggplot2::element_blank(),
+          text = ggplot2::element_text(size = 15))
 
 
    # Facet  base plot depending on facet_by input in function
@@ -123,7 +124,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
 
    # Add geom_text to the plot to show the total number of smolt per site
    size_plot <- size_plot +
-     ggplot2::geom_text(data = summary_data, ggplot2::aes(x = 170, y = Inf, label = label), vjust = 1.5, hjust = 0, size = 3)
+     ggplot2::geom_text(data = summary_data, ggplot2::aes(x = 170, y = Inf, label = label), vjust = 1.5, hjust = 0, size = 5)
 
 
   # minor aesthetic adjustments

@@ -9,6 +9,14 @@
 fct_summary_plot <- function(data_size, data_pred_threshold, data_pred_risk, data_surv, year, show_legend = TRUE){
 
 
+  # # Create a data frame for the legend
+  # legend_data <- data.frame(
+  #   site = c("LWG", "BON"),
+  #   species = c("N. Pikeminnow", "Pacific Hake"),
+  #   type = "Median",
+  #   migration = c("In-river", "Transport")
+  # )
+
 
 #size distribution plot
   #sort year
@@ -47,7 +55,10 @@ pred_plot <- data_pred_risk%>%
   ggplot2::labs(y = "Predation risk (%)",
        x = "Location") +
   ggplot2::geom_text(ggplot2::aes(label = paste0(round(pct_susceptible*100, 1), "%")), vjust = -0.5, position = ggplot2::position_dodge(0.9)) +
-  ggplot2::scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible) * 1.1)) + # Adjust y-axis limits
+  ggplot2::scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible)), expand = ggplot2::expansion(mult = c(0, .15)),
+                              labels = scales::percent_format()) + # Adjust y-axis limits
+  # ggplot2::scale_y_continuous(limits = c(0, max(data_pred_risk$pct_susceptible)*1.2),
+  #                             labels = scales::percent_format()) +
   ggplot2::guides(fill = "none") +
   ggplot2::theme_light() +
   ggplot2::theme(panel.grid = ggplot2::element_blank())
@@ -60,7 +71,7 @@ surv_plot<- data_surv %>%
                   shape =21,
                   size = 1,
                   lwd =.25,
-                  position = ggplot2::position_jitter())+
+                  position = ggplot2::position_jitterdodge( seed = 123))+
   ggplot2::labs( y= "Estimated survival (%)",
         x = "Smolt release year",
         # shape = "Predation risk (%)",
@@ -70,6 +81,7 @@ surv_plot<- data_surv %>%
   ggplot2::guides(color = ggplot2::guide_legend(order = 1)) +
   ggplot2::theme_light() +
   ggplot2::theme(panel.grid = ggplot2::element_blank())
+
 
 
 # Modify the ggplot calls to conditionally hide the legend
