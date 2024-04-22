@@ -26,7 +26,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
             by_half_month = factor( by_half_month,
                                     levels = c("Late March","Early April", "Late April", "Early May", "Late May", "Early June"),
                                     ordered = TRUE),
-            site = factor(site, levels = c("BON", "LWG")),
+            site = factor(site, levels = c("LWG", "BON")),
             .before = length,
            year = factor(year, levels = sort(unique(year)))
     ) %>%
@@ -53,8 +53,8 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
       title = rct.title,
       subtitle = rct.subtitle
     ) +
-     ggplot2::scale_fill_manual (values = c( "BON" = "#b47747", "LWG" = "steelblue4"),
-                        labels = c(  "#b47747" = "BON", "steelblue4" = "LWG"))+
+     ggplot2::scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
+                                labels = c("steelblue4"= "LWG", "#b47747"= "BON")) +
      ggplot2::scale_alpha_manual(values = c("TRUE" = 0.6, "FALSE" = 1)) +
      ggplot2::guides(alpha = "none")+
     ggplot2::theme_light() +

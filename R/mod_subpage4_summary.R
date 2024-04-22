@@ -35,8 +35,8 @@ mod_subpage4_summary_ui <- function(id){
           selectInput(
             inputId = ns("select_site"),
             label = "Location",
-            choices = unique(df_fish$site),
-            selected = unique(df_fish$site),
+            choices = c("BON", "LWG"),
+            selected = c("BON", "LWG"),
             multiple = TRUE
           )
         ),
@@ -72,7 +72,7 @@ mod_subpage4_summary_ui <- function(id){
             inputId = ns("select_year"),
             label = "Select Year(s)",
             choices = sort(unique(df_fish$year)),
-            selected = 2000,
+            selected = 2019,
             options = list(`actions-box` = TRUE),
             multiple = TRUE
           )

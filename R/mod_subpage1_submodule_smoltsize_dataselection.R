@@ -18,8 +18,8 @@ mod_subpage1_submodule_smoltsize_dataselection_ui <- function(id) {
         selectInput(
           inputId = ns("select_loc"),
           label = "Location(s)",
-          choices = unique(df_fish$site),
-          selected = unique(df_fish$site),
+          choices = c("BON", "LWG"),
+          selected = c("BON", "LWG"), #unique(df_fish$site),
           multiple = TRUE
           )
         ),
