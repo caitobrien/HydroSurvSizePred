@@ -8,44 +8,35 @@
 
 fct_summary_plot <- function(data_size, data_pred_threshold, data_pred_risk, data_surv, year, show_legend = TRUE){
 
-
-  # # Create a data frame for the legend
-  # legend_data <- data.frame(
-  #   site = c("LWG", "BON"),
-  #   species = c("N. Pikeminnow", "Pacific Hake"),
-  #   type = "Median",
-  #   migration = c("In-river", "Transport")
-  # )
-
-
-#size distribution plot
-  #sort year
+  # size distribution
   data_size <- data_size %>%
-    dplyr::mutate( year = factor(year, levels = sort(unique(year))))
+    dplyr::mutate(site = factor(site, levels = c("LWG", "BON")))
 
-size_plot <- data_size %>%
-  ggplot2::ggplot(ggplot2::aes(x = length)) +
-  ggplot2::geom_histogram(ggplot2::aes(fill = site), binwidth = 5, alpha = .5) +
-  ggplot2::geom_vline(data = dplyr::filter(data_pred_threshold,  type == "median"), ggplot2::aes(color = species, xintercept = threshold, linetype = type )) +
-  ggplot2::scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
-                    labels = c("steelblue4"= "LWG", "#b47747"= "BON")) +
-  ggplot2::scale_color_manual(values = c("N. Pikeminnow" = "black", "Pacific Hake" = "grey"),
-                     labels = c("black"="N. Pikeminnow", "grey" ="Pacific Hake")) +
-  ggplot2::scale_linetype_manual(values = "solid",
-                        labels = "Median") +
-  ggplot2::labs(
-    x = "Fork length (mm)",
-    y= "Number of smolt",
-    fill = "Location",
-    color = "Predator",
-    linetype = "Predator threshold") +
-  ggplot2::guides(fill = ggplot2::guide_legend(order = 1),
-         color = ggplot2::guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
-         linetype = ggplot2::guide_legend(order = 3)) +
-  ggplot2::theme_light() +
-  ggplot2::theme(panel.grid = ggplot2::element_blank(),
-                 text = ggplot2::element_text(size = 15))
-
+  size_plot <- data_size %>%
+    ggplot2::ggplot(ggplot2::aes(x = length)) +
+    ggplot2::geom_histogram(data = . %>% dplyr::filter(site == "LWG"),
+                            ggplot2::aes(fill = site), binwidth = 5, alpha = .65, position = "identity") +
+    ggplot2::geom_histogram(data = . %>% dplyr::filter(site == "BON"),
+                            ggplot2::aes(fill = site), binwidth = 5, alpha = 1, position = "identity") +
+    ggplot2::geom_vline(data = dplyr::filter(data_pred_threshold,  type == "median"), ggplot2::aes(color = species, xintercept = threshold, linetype = type )) +
+    ggplot2::scale_fill_manual(values = c("LWG" = "steelblue4", "BON" = "#b47747"),
+                               labels = c("steelblue4"= "LWG", "#b47747"= "BON")) +
+    ggplot2::scale_color_manual(values = c("N. Pikeminnow" = "black", "Pacific Hake" = "grey"),
+                                labels = c("black"="N. Pikeminnow", "grey" ="Pacific Hake")) +
+    ggplot2::scale_linetype_manual(values = "solid",
+                                   labels = "Median") +
+    ggplot2::labs(
+      x = "Fork length (mm)",
+      y= "Number of smolt",
+      fill = "Location",
+      color = "Predator",
+      linetype = "Predator threshold") +
+    ggplot2::guides(fill = ggplot2::guide_legend(order = 1),
+                    color = ggplot2::guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
+                    linetype = ggplot2::guide_legend(order = 3)) +
+    ggplot2::theme_light() +
+    ggplot2::theme(panel.grid = ggplot2::element_blank(),
+                   text = ggplot2::element_text(size = 15))
 
 #predation risk plot
 pred_plot <- data_pred_risk%>%
