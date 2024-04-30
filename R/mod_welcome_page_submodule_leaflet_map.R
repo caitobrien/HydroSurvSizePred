@@ -14,7 +14,12 @@ mod_welcome_page_submodule_leaflet_map_ui <- function(id){
       leaflet::leafletOutput(ns("map"),
                              height = "350px"),
       br(),
-      div(style = "text-align: left;", "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles) along Spring/Summer Chinook salmon and Steelhead migratory routes."
+      div(style = "text-align: left;", "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles)
+          along spring/summer Chinook salmon migratory pathway (grey lines: outmigration of in-river (solid) and barge transported (dashed) juveniles; black line: adult return migration).
+          HydroSurvSizePred uses data from passive integrated transponder tagged fish detected at select sites (red circles).
+          Highlighted areas denote Northern Pikeminnow (grey) and Pacific Hake (blue) distributions *pending update with polygon to mimic distribution data (currently do not have).
+          "
+
           )
   )
 }
@@ -34,7 +39,7 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
       Lon = c(-117.42737011713677,-117.42737011713677,-117.42019252542396 , -118.0260163871114,-118.54315348896209, -118.87984211781144,  -119.29757721597544,-120.69368083132734,-121.13417428900306,  -121.94060471598787, -121.94060471598787, -121.94060202780263, -121.94060471598787),
       passtype = c(0,0,1,0,0,0,0,0,0,0,0,1,0),
       direction = c(0,2,0,0,0,0,0,0,0,0,1,1,2),
-      detection = c(0,1,1,0,0,0,0,0,0,0,1,1,1)
+      detection = c(0,0,1,0,0,0,0,0,0,0,1,1,1)
     )
 
 
@@ -75,16 +80,16 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
         # #outgoing - in-river
         leaflet::addPolylines(data = dplyr::filter(rivers_data, passtype == 0 & direction %in% c("1", "0")), lng = ~Lon, lat = ~Lat+.1, color = "grey") %>%
         # outgoing - transport
-        leaflet::addPolylines(data = dplyr::filter(rivers_data, passtype == 1), lng = ~Lon, lat = ~Lat+.1, color = "grey") %>%
+        leaflet::addPolylines(data = dplyr::filter(rivers_data, passtype == 1), lng = ~Lon, lat = ~Lat+.1, color = "grey", dashArray = "5, 5") %>%
         #add specific labels for icons (outgoing)
         ##LGR
         leaflet::addAwesomeMarkers(
           lng = -117.42737011713677,
           lat = 46.66053259552463+.1,
           label = HTML("<div style='background-color: lightgrey;width: 200px; white-space: normal;'><b>Juveniles entering the hydrosystem</b><br>
-                 All fish (Steelhead and spring/summer Chinook) originated upstream of LGR,
+                 All spring/summer Chinook salmon originate upstream of LGR,
                  with a portion transported via barges from LGR to a release site below BON,
-                expediting travel time through the hydrosystem, whereas the remaining travel in-river."),
+                expediting travel time through the hydrosystem, possibly affect later life stages."),
           labelOptions = leaflet::labelOptions(noHide = FALSE, direction = "auto", html = TRUE),
           icon = leaflet::awesomeIcons(
             library = "fa",
@@ -96,10 +101,14 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
         leaflet::addAwesomeMarkers(
           lng = -121.94060471598787,
           lat = 45.64441868254798+.1,
-          label = HTML("<div style='background-color: lightgrey; width: 200px; white-space: normal;'><b>Juvenile entering the estuary and ocean</b><br>
-                 Day-of-year (DOY) and river temperature are assigned based on outmigration detection at BON,
-                 representing migration timing and seasonal changes experienced during outmigration, possible indicators of juveniles surviving to maturity. </div>"
+          label = HTML("<div style='background-color: lightgrey; width: 200px; white-space: normal;'><b>Smolt size distribution</b><br>
+                       Smolt sizes vary within seasons and across years and may also differ based on the type of passage through the hydrosystem.
+                       Transported smolts tend to be smaller due to shorter passage time than their in-river counterparts.
+                       Smaller sizes increase predation risk to river and marine predators such as the Northern Pikeminnow and Pacific Hake.
+                  </div>"
           ),
+
+
           labelOptions = leaflet::labelOptions(noHide = FALSE, direction = "auto", html = TRUE, backgroundColor = "lightgrey"),
           icon = leaflet::awesomeIcons(
             library = "fa",
@@ -135,8 +144,10 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
         leaflet::addAwesomeMarkers(
           lng = -117.42737011713677,
           lat = 46.66053259552463-.1,
-          label = HTML("<div style='width: 200px; white-space: normal;'><b>S Survival-to-Adult (SAR) & Transported to Bypassed fish survival ratio (T:B)</b><br>
-                 To assess the effectiveness of the transportation program,  TIE into earlier points.</div>"
+          label = HTML("<div style='width: 200px; white-space: normal;'><b>Estimated survival by reach</b>
+                       <br>To better understand survival through the hydrosystem, this application highlights predicted survival
+                       from LWG-BON (downstream survival), BON-BOA (estuary & ocean survival), and LWG-BOA using CJS modeling.
+                       </div>"
           ),
           labelOptions = leaflet::labelOptions(noHide = FALSE, direction = "auto", html = TRUE),
           icon = leaflet::awesomeIcons(
@@ -149,8 +160,8 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
         leaflet::addAwesomeMarkers(
           lng = -121.94060471598787,
           lat = 45.64441868254798-.1,
-          label = HTML("<div style='width: 200px; white-space: normal;'><b>Adult returns</b><br>
-                 TBD  gosselin paper and PDO effects"),
+          label = HTML("<div style='width: 200px; white-space: normal;'><b>Predation Risk</b><br>
+                Predation risk can vary based on smolt size as well as the the prey size threshold per predator type (Northern Pikeminnow; grey highlighted area, Pacific Hake: blue highlighted area). As smolt size changes through salmon migration, so does the risk to predation."),
           labelOptions = leaflet::labelOptions(noHide = FALSE, direction = "auto", html = TRUE),
           icon = leaflet::awesomeIcons(
             library = "fa",
