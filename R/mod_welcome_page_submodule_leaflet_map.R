@@ -46,7 +46,7 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
       leaflet::addRectangles(
         lng1=-116, lat1=48,
         lng2=-124, lat2=45,
-        fillColor = "green",
+        fillColor = "grey",
         stroke = FALSE,
 
         popup = "Northern Pikeminnow"
@@ -54,7 +54,7 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
         leaflet::addRectangles(
           lng1=-122, lat1=52,
           lng2=-130, lat2=43,
-          fillColor = "orange",
+          fillColor = "#024c63",
           stroke = FALSE,
 
           popup = "Pacific Hake"
@@ -150,7 +150,7 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
           lng = -121.94060471598787,
           lat = 45.64441868254798-.1,
           label = HTML("<div style='width: 200px; white-space: normal;'><b>Adult returns</b><br>
-                 IDK what goes here? talk about gosselin paper and PDO effects"),
+                 TBD  gosselin paper and PDO effects"),
           labelOptions = leaflet::labelOptions(noHide = FALSE, direction = "auto", html = TRUE),
           icon = leaflet::awesomeIcons(
             library = "fa",

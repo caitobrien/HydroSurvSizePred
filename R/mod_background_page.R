@@ -17,9 +17,9 @@ mod_background_page_ui <- function(id){
         status = "primary",
         title = "Background information for HydroSurvSizePred shinyAPP,",
         em("an exploratory app of size, predation risk, and survival in the hydrosystem")
+      )
       ),
-
-
+    fluidRow(
       shinydashboard::box(
         width = 12,
         solidHeader = FALSE,
@@ -53,8 +53,43 @@ mod_background_page_ui <- function(id){
              "
              )
       )
+      ),
+      fluidRow(
+        shinydashboard::box(
+          title = "References",
+          status = "info",
+          width = 12,
+          collapsible = TRUE,
+          collapsed = FALSE,
+          shiny::includeHTML(system.file("app/www/mod_background_references_text.html", package = "HydroSurvSizePred"))
+        )
+      ),
+
+      fluidRow(
+        shinydashboard::box(
+          title = "Additional Information",
+          status = "info",
+          width = 12,
+          collapsible = TRUE,
+          collapsed = FALSE,
+          HTML("All code featured in this Shiny application is made publically available through a GitHub repository: <a href='https://github.com/caitobrien/HydroSurvSizePred.git'><i class='fab fa-github'></i> HyrdroSurvSizePred</a>"
+          )
+        )
+      ),
+
+      fluidRow(
+        shinydashboard::box(
+          title = "Contact Information",
+          status = "info",
+          collapsible = TRUE,
+          collapsed = FALSE,
+          width = 12,
+          HTML("<p>This ShinyApp is a product of Columbia Basin Reasearch, School of Aquatic and Fishery Sciences, College of the Environment, University of Washington.</p>
+               <p>Please direct general questions to: <a href='mailto:web@cbr.washington.edu'>web@cbr.washington.edu</a></p>"
+          )
+        )
+      )
     )
-  )
 }
 
 #' background_page Server Functions
