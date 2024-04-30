@@ -17,7 +17,7 @@ mod_welcome_page_submodule_leaflet_map_ui <- function(id){
       div(style = "text-align: left;", "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles)
           along spring/summer Chinook salmon migratory pathway (grey lines: outmigration of in-river (solid) and barge transported (dashed) juveniles; black line: adult return migration).
           HydroSurvSizePred uses data from passive integrated transponder tagged fish detected at select sites (red circles).
-          Highlighted areas denote Northern Pikeminnow (grey) and Pacific Hake (blue) distributions *pending update with polygon to mimic distribution data (currently do not have).
+          Highlighted areas denote Northern Pikeminnow (grey) and Pacific Hake (blue) distributions. *pending update with polygon to mimic distribution data (currently do not have).
           "
 
           )
