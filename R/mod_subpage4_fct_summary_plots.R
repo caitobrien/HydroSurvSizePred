@@ -39,7 +39,7 @@ fct_summary_plot <- function(data_size, data_pred_threshold, data_pred_risk, dat
                    text = ggplot2::element_text(size = 15))
 
 #predation risk plot
-pred_plot <- data_pred_risk%>%
+pred_plot <- data_pred_risk %>%
   ggplot2::ggplot(ggplot2::aes(y=pct_susceptible, x=site, fill = predator)) +
   ggplot2::geom_bar(stat= "identity", position = ggplot2::position_dodge()) +
   ggplot2::scale_fill_manual (values = c( "Pacific Hake" = "grey", "N. Pikeminnow" = "black"),
@@ -85,7 +85,7 @@ surv_plot<- data_surv %>%
 
   # Arrange plots with patchwork and add annotation
   top_legends <- (
-    (size_plot + pred_plot + surv_plot ) +
+    patchwork::wrap_plots(size_plot, pred_plot, surv_plot, ncol=3 ) +
       patchwork::plot_layout(guides = if (show_legend) "collect" else "keep")
   )
 
