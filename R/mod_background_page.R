@@ -15,7 +15,7 @@ mod_background_page_ui <- function(id){
         width = 12,
         solidHeader = TRUE,
         status = "primary",
-        title = "Background information for HydroSurvSizePred shinyAPP,",
+        title = "Supplementary information for HydroSurvSizePred shinyAPP,",
         em("an exploratory app of size, predation risk, and survival in the hydrosystem")
       )
       ),

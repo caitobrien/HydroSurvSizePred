@@ -55,7 +55,7 @@ app_ui <- function(request) {
                                    shinydashboard::menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up")),
                                    shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "subpage4", icon = icon("diagram-project"))
                                    ),
-          shinydashboard::menuItem("Background", tabName = "background_page", icon = icon("info"))
+          shinydashboard::menuItem("Supplementary Information", tabName = "background_page", icon = icon("info"))
         )
       ),
 
