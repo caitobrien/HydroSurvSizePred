@@ -61,12 +61,12 @@ mod_subpage2_predrisk_ui <- function(id){
                           collapsible = TRUE,
                           collapsed = TRUE,
                           mod_subpage2_submodule_predrisk_smoltsize_plot_ui("subpage2_submodule_predrisk_smoltsize_plot_1")
-                          ),
-      shinydashboard::box(width = 12,
-                          title = "Add numbers and distribution (interactive map?) and simple figure?",
-                          status = "info",
-                          collapsible = TRUE,
-                          collapsed = TRUE)
+                          )
+      # shinydashboard::box(width = 12,
+      #                     title = "Add numbers and distribution (interactive map?) and simple figure?",
+      #                     status = "info",
+      #                     collapsible = TRUE,
+      #                     collapsed = TRUE)
     )
   )
 }
