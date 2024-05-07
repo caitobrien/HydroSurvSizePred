@@ -31,13 +31,12 @@ mod_subpage2_predrisk_ui <- function(id){
         fluidRow(
           column(
             width = 12,
-            HTML("<p>The figure below displays the predation risk based on Pacific Hake size thresholds across years.</p>")
+            HTML("<p>The figure below displays the predation risk based on Pacific Hake size thresholds across years. For both figures, click on the plot legend to toggle the display of locations</p>")
           ),
           column(
             width = 10,
             offset = 1, # Centering the column
-            plotly::plotlyOutput(outputId = ns("plot_hake"),height = "50%"),
-            HTML("<p><em>Click on the plot legend to toggle the display of locations.</em></p>")
+            plotly::plotlyOutput(outputId = ns("plot_hake"),height = "50%")
           )
         ),
         br(),

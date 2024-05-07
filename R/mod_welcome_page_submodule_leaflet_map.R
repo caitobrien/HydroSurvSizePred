@@ -16,8 +16,7 @@ mod_welcome_page_submodule_leaflet_map_ui <- function(id){
       br(),
       div(style = "text-align: left;", "Figure 1: Map of the Columbia and Snake River, Pacific Northwest, USA, with major hydroelectric dams denoted (dark circles)
           along spring/summer Chinook salmon migratory pathway (grey lines: outmigration of in-river (solid) and barge transported (dashed) juveniles; black line: adult return migration).
-          HydroSurvSizePred uses data from passive integrated transponder tagged fish detected at select sites (red circles).
-          Highlighted areas denote Northern Pikeminnow (grey) and Pacific Hake (blue) distributions. *pending update with polygon to mimic distribution data (currently do not have).
+          HydroSurvSizePred uses data from passive integrated transponder tagged fish detected at select sites (red circles). Predators icons denote Northern Pikeminnow and Pacific Hake.
           "
 
           )
@@ -42,27 +41,33 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
       detection = c(0,0,1,0,0,0,0,0,0,0,1,1,1)
     )
 
+    #icons
+    npikeminnow_icon <- leaflet::makeIcon(
+      iconUrl = system.file("app/www/Npikeminnow.svg", package = "HydroSurvSizePred"),
+      iconWidth = 80, iconHeight = 40
+    )
+    phake_icon <- leaflet::makeIcon(
+      iconUrl = system.file("app/www/Phake.svg", package = "HydroSurvSizePred"),
+      iconWidth = 80, iconHeight = 40
+    )
+
 
     output$map <- leaflet::renderLeaflet({
       leaflet::leaflet() %>%
-        leaflet::setView(lng = -119, lat = 46, zoom = 7) %>%
+        leaflet::setView(lng = -123, lat = 46, zoom = 6) %>%
         leaflet::addTiles(urlTemplate = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
                           attribution = 'Tiles &copy; <a href="https://www.carto.com/">Carto</a>') %>%
-      leaflet::addRectangles(
-        lng1=-116, lat1=48,
-        lng2=-124, lat2=45,
-        fillColor = "grey",
-        stroke = FALSE,
+        leaflet::addMarkers(
+          lng=-124.8, lat=46.6,
+          icon = phake_icon,
+          popup = "Pacific Hake",
 
-        popup = "Northern Pikeminnow"
-      ) %>%
-        leaflet::addRectangles(
-          lng1=-122, lat1=52,
-          lng2=-130, lat2=43,
-          fillColor = "#024c63",
-          stroke = FALSE,
+        ) %>%
+        leaflet::addMarkers(
+          lng=-121, lat=46.5,
+          icon = npikeminnow_icon,
+          popup = "Northern Pikeminnow",
 
-          popup = "Pacific Hake"
         ) %>%
 
         #outgoing- in-river with
@@ -161,7 +166,7 @@ mod_welcome_page_submodule_leaflet_map_server <- function(id){
           lng = -121.94060471598787,
           lat = 45.64441868254798-.1,
           label = HTML("<div style='width: 200px; white-space: normal;'><b>Predation Risk</b><br>
-                Predation risk can vary based on smolt size as well as the the prey size threshold per predator type (Northern Pikeminnow; grey highlighted area, Pacific Hake: blue highlighted area). As smolt size changes through salmon migration, so does the risk to predation."),
+                Predation risk can vary based on smolt size as well as the the prey size threshold per predator type (Northern Pikeminnow; riverine/estuary habitat, Pacific Hake: ocean habitat). As smolt size changes through salmon migration, so does the risk to predation."),
           labelOptions = leaflet::labelOptions(noHide = FALSE, direction = "auto", html = TRUE),
           icon = leaflet::awesomeIcons(
             library = "fa",

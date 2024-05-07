@@ -28,15 +28,16 @@ fct_summary_plot <- function(data_size, data_pred_threshold, data_pred_risk, dat
     ggplot2::labs(
       x = "Fork length (mm)",
       y= "Number of smolt",
-      fill = "Location",
-      color = "Predator",
-      linetype = "Predator threshold") +
+      fill = "Location:",
+      color = "Predator:",
+      linetype = "Predator threshold:") +
     ggplot2::guides(fill = ggplot2::guide_legend(order = 1),
                     color = ggplot2::guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
                     linetype = ggplot2::guide_legend(order = 3)) +
     ggplot2::theme_light() +
     ggplot2::theme(panel.grid = ggplot2::element_blank(),
-                   text = ggplot2::element_text(size = 15))
+                   text = ggplot2::element_text(size = 15),
+                   legend.title = ggplot2::element_text(face = "bold"))
 
 #predation risk plot
 pred_plot <- data_pred_risk %>%
@@ -54,7 +55,8 @@ pred_plot <- data_pred_risk %>%
   ggplot2::guides(fill = "none") +
   ggplot2::theme_light() +
   ggplot2::theme(panel.grid = ggplot2::element_blank(),
-                 text = ggplot2::element_text(size = 15))
+                 text = ggplot2::element_text(size = 15),
+                 legend.title = ggplot2::element_text(face = "bold"))
 
 #survival plot
 surv_plot<- data_surv %>%
@@ -68,13 +70,14 @@ surv_plot<- data_surv %>%
   ggplot2::labs( y= "Estimated survival",
         x = "Smolt release year",
         # shape = "Predation risk (%)",
-        color = "Passage type",
-        linetype = "Median") +
+        color = "Passage type:",
+        linetype = "Median:") +
   ggplot2::scale_y_continuous(labels = scales::percent_format())+
   ggplot2::guides(color = ggplot2::guide_legend(order = 1)) +
   ggplot2::theme_light() +
   ggplot2::theme(panel.grid = ggplot2::element_blank(),
-                 text = ggplot2::element_text(size = 15))
+                 text = ggplot2::element_text(size = 15),
+                 legend.title = ggplot2::element_text(face = "bold"))
 
 
 

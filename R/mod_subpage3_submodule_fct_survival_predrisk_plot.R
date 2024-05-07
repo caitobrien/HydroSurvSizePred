@@ -44,7 +44,7 @@ fct_survival_predrisk_plot <- function(data_surv, data_pred_risk) {
       ggplot2::geom_hline(yintercept = 0, linetype = "solid", color = "black") +
       ggplot2::labs(x = "Year",
                     y = "Percent Susceptible\n[Predation]",
-                    fill = "Predation",
+                    fill = "Predation:",
                     color = "Location:Passage Type") +
       ggplot2::scale_y_continuous(
         sec.axis = ggplot2::sec_axis(~.*8/100, name = "Estimated Percent Survival\n[Location:Passage Type]")) +
@@ -55,7 +55,8 @@ fct_survival_predrisk_plot <- function(data_surv, data_pred_risk) {
         legend.position = "top",
         panel.grid.minor  = ggplot2::element_blank(),
         axis.text.y.left = ggplot2::element_text(color = "black"),
-        text = ggplot2::element_text(size = 15)
+        text = ggplot2::element_text(size = 15),
+        legend.title = ggplot2::element_text(face = "bold")
         )
 
 }

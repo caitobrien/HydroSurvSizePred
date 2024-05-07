@@ -46,7 +46,8 @@ fct_survival_plot <- function(data) {
       panel.spacing.y = ggplot2::unit(1, "cm"),
       panel.grid.minor = ggplot2::element_blank(),
       legend.position = "top",
-      text = ggplot2::element_text(size = 15)
+      text = ggplot2::element_text(size = 15),
+      legend.title = ggplot2::element_text(face = "bold")
     )
 
   p <- plotly::ggplotly(p, tooltip = "text")

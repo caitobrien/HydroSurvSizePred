@@ -48,7 +48,7 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
     ggplot2::labs(
       x = "Smolt fork length (mm)",
       y = "Number of smolt",
-      fill = "Detection site",
+      fill = "Detection site:",
       alpha = NULL,
       title = rct.title,
       subtitle = rct.subtitle
@@ -62,7 +62,8 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
     ggplot2::theme(strip.text = ggplot2::element_text(color = "black"),
           legend.position = "top",
           panel.grid = ggplot2::element_blank(),
-          text = ggplot2::element_text(size = 15))
+          text = ggplot2::element_text(size = 15),
+          legend.title = ggplot2::element_text(face = "bold"))
 
 
    # Facet  base plot depending on facet_by input in function
@@ -94,17 +95,17 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
    # Add vertical lines based on selected predators
    if (!is.null(predators_selected)) {
      size_plot <- size_plot +
-       ggplot2::labs( color = "Predator species",
-             linetype = "Predator threshold") +
+       ggplot2::labs( color = "Predator species:",
+             linetype = "Predator threshold:") +
        ggplot2::geom_vline(data = vlines_data[vlines_data$label %in% predators_selected, ],
                   ggplot2::aes(xintercept = xintercept, color = color, linetype = linetype),
                   show.legend = TRUE) +
        ggplot2::scale_color_manual(values = c("black" = "black", "grey" = "grey"),
                           labels = c("N. Pikeminnow", "Pacfic hake"),
-                          name = "Predator species") +
+                          name = "Predator species:") +
        ggplot2::scale_linetype_manual(values = c("solid" = "solid", "dashed" = "dashed"),
                              labels = c( "Min/Max", "Median"),
-                             name = "Predator threshold") +
+                             name = "Predator threshold:") +
        ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(linetype = 0), order = 1), # remove line from site legend
               color = ggplot2::guide_legend(override.aes = list(shape = 15), order = 2), # change predator legend to squares
               linetype = ggplot2::guide_legend(order = 3))
@@ -131,7 +132,8 @@ fct_smoltsize_histogram_or_density_plot <- function(data, facet_by, predators_se
    size_plot <- size_plot +
      ggplot2::theme(strip.background = ggplot2::element_rect(fill = "lightgrey"),
            strip.text = ggplot2::element_text(colour = 'black'),
-           panel.spacing = ggplot2::unit(2, "lines")) +
+           panel.spacing = ggplot2::unit(2, "lines"),
+           legend.title = ggplot2::element_text(face = "bold")) +
      ggplot2::expand_limits(y = c(0, NA))  # Adjust y-axis limits as needed
 
 

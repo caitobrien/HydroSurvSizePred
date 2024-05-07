@@ -50,10 +50,10 @@ app_ui <- function(request) {
           id = "tabs",
           shinydashboard::menuItem("Welcome", tabName = "welcome_page", icon = icon("home")),
           shinydashboard::menuItem("SizePred Survival App", tabName = "figs", icon = icon("chart-line"),
+                                   shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "subpage4", icon = icon("diagram-project")),
                                    shinydashboard::menuSubItem("Smolt Size", tabName = "subpage1", icon = icon("ruler-horizontal")),
                                    shinydashboard::menuSubItem("Predation Risk", tabName = "subpage2", icon = icon("arrow-trend-down")),
-                                   shinydashboard::menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up")),
-                                   shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "subpage4", icon = icon("diagram-project"))
+                                   shinydashboard::menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up"))
                                    ),
           shinydashboard::menuItem("Supplementary Information", tabName = "background_page", icon = icon("info"))
         )

@@ -44,7 +44,7 @@ mod_subpage1_smoltsize_ui <- function(id) {
               inputId = ns("select_graph"),
               label = "Choose a graph",
               choices = c("Histogram", "Density"),
-              selected = "Histogram",
+              selected = "Density",
               inline = TRUE
             )
           )
