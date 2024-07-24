@@ -6,21 +6,6 @@
 #' @noRd
 
 
-# Generating sample data
-# set.seed(123)
-# data.test <- expand.grid(
-#   year = 2000:2005,
-#   doy = 150:200,
-#   site = c("BON", "LWG"),
-#   pass_type = c("T", "R")
-# ) %>%
-#   dplyr::mutate(
-#     length = rep( rnorm(165, mean = 120, sd = 10), length.out = 1224),
-#     pctsurv = rep(rnorm(100, mean = 30, sd = 15), length.out = 1224),
-#     pctprey = rep(rnorm(100, mean = 50, sd =20), length.out = 1224),
-#     predator = rep(c("PH", "NH"), length.out = 1224),
-#     date = as.Date(paste(year,doy), format = "%Y %j"))
-
 #figure a way to make this redundant (with module) or live in data
 predator_thresholds<-data.frame(species = c("N. Pikeminnow", "Pacific Hake"),
                             median = c(166.165, 110),
@@ -39,7 +24,6 @@ app_ui <- function(request) {
     golem_add_external_resources(),
 
 
-     # Your application UI logic
     shinydashboard::dashboardPage(
       #header
       shinydashboard::dashboardHeader(title = "Columbia Basin Research"),
@@ -48,9 +32,9 @@ app_ui <- function(request) {
       shinydashboard::dashboardSidebar(
         shinydashboard::sidebarMenu(
           id = "tabs",
-          shinydashboard::menuItem("Welcome", tabName = "welcome_page", icon = icon("home")),
+          shinydashboard::menuItem("About", tabName = "about_page", icon = icon("home")),
           shinydashboard::menuItem("SizePred Survival App", tabName = "figs", icon = icon("chart-line"),
-                                   shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "subpage4", icon = icon("diagram-project")),
+                                   shinydashboard::menuSubItem("Size, Predation, and Survival", tabName = "subpage4", icon = icon("diagram-project"), selected = TRUE),
                                    shinydashboard::menuSubItem("Smolt Size", tabName = "subpage1", icon = icon("ruler-horizontal")),
                                    shinydashboard::menuSubItem("Predation Risk", tabName = "subpage2", icon = icon("arrow-trend-down")),
                                    shinydashboard::menuSubItem("Estimated Survival", tabName = "subpage3", icon = icon("arrow-trend-up"))
@@ -67,8 +51,8 @@ app_ui <- function(request) {
 
         #submenu items
         shinydashboard::tabItems(
-          shinydashboard::tabItem("welcome_page",
-                  mod_welcome_page_ui("welcome_page_1")),
+          shinydashboard::tabItem("about_page",
+                  mod_about_page_ui("about_page_1")),
           shinydashboard::tabItem("subpage1",
                   mod_subpage1_smoltsize_ui("subpage1_smoltsize_1")),
           shinydashboard::tabItem("subpage2",

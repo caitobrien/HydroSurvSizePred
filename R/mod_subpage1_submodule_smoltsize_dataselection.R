@@ -15,24 +15,26 @@ mod_subpage1_submodule_smoltsize_dataselection_ui <- function(id) {
       # select locations
       column(
         width = 3,
-        selectInput(
+        shinyWidgets::prettyCheckboxGroup(
           inputId = ns("select_loc"),
           label = "Location(s)",
+          shape = "curve",
+          outline = TRUE,
           choices = c("BON", "LWG"),
-          selected = c("BON", "LWG"), #unique(df_fish$site),
-          multiple = TRUE
+          selected =  c("BON", "LWG")
           )
         ),
 
       #select predator thresholds
       column(
         width = 3,
-        selectInput(
+        shinyWidgets::prettyCheckboxGroup(
           inputId = ns("select_predator"),
           label = "Predator threshold(s)",
+          shape = "curve",
+          outline = TRUE,
           choices = unique(predator_thresholds$species),
           selected = unique(predator_thresholds$species),
-          multiple = TRUE
           )
         ),
 

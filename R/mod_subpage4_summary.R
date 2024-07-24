@@ -16,8 +16,8 @@ mod_subpage4_summary_ui <- function(id){
         width = 12,
         solidHeader = TRUE,
         status = "primary",
-        title = "Summary of size distribution, predation risk, and estimated survival",
-        HTML("A comparison between smolt size distributions, predation risk, and estimated LWG-BOA survival across years."),
+        title = "Size Selective Predation",
+        shiny::includeHTML(system.file("app/www/mod_subpage4_summary_text.html", package = "HydroSurvSizePred")),
         collapsible = TRUE,
         collapsed = FALSE
       ),
@@ -32,36 +32,39 @@ mod_subpage4_summary_ui <- function(id){
         # select site
         column(
           width = 3,
-          selectInput(
+          shinyWidgets::prettyCheckboxGroup(
             inputId = ns("select_site"),
             label = "Location",
+            shape = "curve",
+            outline = TRUE,
             choices = c("BON", "LWG"),
-            selected = c("BON", "LWG"),
-            multiple = TRUE
+            selected =   c("BON", "LWG")
           )
         ),
 
         #select predator thresholds
         column(
           width = 3,
-          selectInput(
+          shinyWidgets::prettyCheckboxGroup(
             inputId = ns("select_predator"),
             label = "Predator risk",
+            shape = "curve",
+            outline = TRUE,
             choices = unique(df_pred_summary$predator),
-            selected = unique(df_pred_summary$predator),
-            multiple = TRUE
+            selected = unique(df_pred_summary$predator)
           )
         ),
 
         #select passage type
         column(
           width = 3,
-          selectInput(
+          shinyWidgets::prettyCheckboxGroup(
             inputId = ns("select_passtype"),
             label = "Passage type",
+            shape = "curve",
+            outline = TRUE,
             choices = unique(df_survival$migration),
-            selected = unique(df_survival$migration),
-            multiple = TRUE
+            selected = unique(df_survival$migration)
           )
         ),
 

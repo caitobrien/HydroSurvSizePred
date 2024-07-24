@@ -32,24 +32,27 @@ mod_subpage3_survival_ui <- function(id){
           # select reach
           column(
             width = 3,
-            selectInput(
+            shinyWidgets::prettyCheckboxGroup(
               inputId = ns("select_reach"),
               label = "Reaches",
+              shape = "curve",
+              outline = TRUE,
               choices = unique(df_survival$reach),
-              selected = unique(df_survival$reach),
-              multiple = TRUE
+              selected = unique(df_survival$reach)
             )
           ),
 
         #select passage type
         column(
           width = 3,
-          selectInput(
+          shinyWidgets::prettyCheckboxGroup(
             inputId = ns("select_passtype"),
             label = "Passage type",
+            shape = "curve",
+            outline = TRUE,
             choices = unique(df_survival$migration),
-            selected = unique(df_survival$migration),
-            multiple = TRUE
+            selected = unique(df_survival$migration)
+
           )
         ),
 
