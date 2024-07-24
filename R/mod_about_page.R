@@ -1,4 +1,4 @@
-#' welcome_page UI Function
+#' about_page UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_welcome_page_ui <- function(id) {
+mod_about_page_ui <- function(id) {
   ns <- NS(id)
   tagList(
 
@@ -20,21 +20,6 @@ mod_welcome_page_ui <- function(id) {
       )
     ),
 
-
-    #Info box
-    fluidRow(
-
-        shinydashboard::box(
-          title = "What does this application do?",
-          width = 12,
-          solidHeader = TRUE,
-          collapsible = TRUE,
-          collapsed = FALSE,
-          status = "primary",
-          shiny::includeHTML(system.file("app/www/mod_welcome_Q1_text.html", package = "HydroSurvSizePred")),
-        )
-        ),
-
     #overview
     fluidRow(
     shinydashboard::box(
@@ -42,7 +27,7 @@ mod_welcome_page_ui <- function(id) {
       width = 12,
       solidHeader = FALSE,
       collapsible = TRUE,
-      collapsed = TRUE,
+      collapsed = FALSE,
       status = "info",
       br(),
       # Predators have different prey size thresholds, such that freshwater N. Pikeminnow have a larger prey size threshold than Pacific Hake in the marine environment.
@@ -64,7 +49,7 @@ mod_welcome_page_ui <- function(id) {
         column(
           width = 6,
 
-          mod_welcome_page_submodule_leaflet_map_ui("welcome_page_submodule_leaflet_map_1"),
+          mod_about_page_submodule_leaflet_map_ui("about_page_submodule_leaflet_map_1"),
 
           column(width = 3) # Empty column to center map
         )
@@ -89,20 +74,20 @@ mod_welcome_page_ui <- function(id) {
   )
 }
 
-#' welcome_page Server Functions
+#' about_page Server Functions
 #'
 #' @noRd
-mod_welcome_page_server <- function(id){
+mod_about_page_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    mod_welcome_page_submodule_leaflet_map_server("welcome_page_submodule_leaflet_map_1")
+    mod_about_page_submodule_leaflet_map_server("about_page_submodule_leaflet_map_1")
 
   })
 }
 
 ## To be copied in the UI
-# mod_welcome_page_ui("welcome_page_1")
+# mod_about_page_ui("about_page_1")
 
 ## To be copied in the server
-# mod_welcome_page_server("welcome_page_1")
+# mod_about_page_server("about_page_1")
